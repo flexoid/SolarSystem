@@ -23,7 +23,7 @@ IGUIEnvironment* guienv;
 
 //Параметры анимации
 bool IsActive = true;
-f32 speed = 100.0f;
+f32 koeffSpeed = 1.0f;
 
 int main()
 {

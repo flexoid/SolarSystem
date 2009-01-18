@@ -1,8 +1,9 @@
-﻿#include "ISceneNodeAnimatorFlyEllipce.h"
+﻿#include "SSISceneNodeAnimatorFlyEllipce.h"
 
-ISceneNodeAnimatorFlyEllipce::ISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 *speed, f32 afelij, f32 peregelij, bool *IsActive)
+SSISceneNodeAnimatorFlyEllipce::SSISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive)
 {
 	Speed = speed;
+	koeffSpeed = koeffOfSpeed;
 	X_radius = afelij + peregelij;
 	Y_radius = sqrtf(X_radius*X_radius - (afelij - peregelij)*(afelij - peregelij));
 	deg = 0;
@@ -12,7 +13,7 @@ ISceneNodeAnimatorFlyEllipce::ISceneNodeAnimatorFlyEllipce(const core::vector3df
 	Active = IsActive;
 }
 
-void ISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
+void SSISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
 {
 	if (node)
 	{
@@ -22,7 +23,7 @@ void ISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
 			if (diffTime != 0)
 			{
 				if (deg >= 360.0f && deg <= -360.0f) deg = 0;
-				deg += 1.0f / 1000.0f * diffTime * *Speed;
+				deg += 1.0f / 1000.0f * diffTime * Speed * *koeffSpeed;
 				f32 rad = deg * DEGTORAD;
 				vector3df newpos = node->getPosition();
 				newpos.X = Center.X + X_radius * cosf(rad);
@@ -36,17 +37,17 @@ void ISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
 	}
 }
 
-ISceneNodeAnimatorFlyEllipce::~ISceneNodeAnimatorFlyEllipce(void)
+SSISceneNodeAnimatorFlyEllipce::~SSISceneNodeAnimatorFlyEllipce(void)
 {
 }
 
-void ISceneNodeAnimatorFlyEllipce::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
+void SSISceneNodeAnimatorFlyEllipce::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
 {
 	//out->addVector3d("Rotation", Rotation);
 }
 
 //! Reads attributes of the scene node animator.
-void ISceneNodeAnimatorFlyEllipce::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
+void SSISceneNodeAnimatorFlyEllipce::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
 {
 	//Rotation = in->getAttributeAsVector3d("Rotation");
 }

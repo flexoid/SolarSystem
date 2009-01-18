@@ -1,10 +1,9 @@
 //											Обработчик событий
 
-#pragma once
 #include <irrlicht.h>
 
-#ifndef __C_SS_EVENT_RECEIVER_H_INCLUDED__
-#define __C_SS_EVENT_RECEIVER_H_INCLUDED__
+#ifndef __SS_EVENT_RECEIVER_H_INCLUDED__
+#define __SS_EVENT_RECEIVER_H_INCLUDED__
 
 using namespace irr;
 using namespace core;

@@ -185,23 +185,23 @@
 			Name="Classes"
 			>
 			<File
-				RelativePath=".\ISceneNodeAnimatorFlyEllipce.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ISceneNodeAnimatorFlyEllipce.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ISceneNodeAnimatorRotation.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ISceneNodeAnimatorRotation.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SSEventReceiver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SSISceneNodeAnimatorFlyEllipce.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SSISceneNodeAnimatorFlyEllipce.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SSISceneNodeAnimatorRotation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SSISceneNodeAnimatorRotation.h"
 				>
 			</File>
 		</Filter>
