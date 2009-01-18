@@ -1,8 +1,7 @@
-#include <irrlicht.h>
+п»ї#include <irrlicht.h>
 #include <windows.h>
 #include <iostream>
-#include "ISceneNodeAnimatorFlyEllipce.h"
-#include "EventDispatcher.h"
+#include "Planets.h"
 
 #pragma comment(lib, "Irrlicht.lib")
 
@@ -18,6 +17,9 @@ ISceneManager* smgr;
 HANDLE mutex;
 DWORD WINAPI renderWorker (void* arg);
 bool eventHandler (const SEvent& irrEvent);
+
+//РђРєС‚РёРІРЅРѕСЃС‚СЊ Р°РЅРёРјР°С†РёРё
+bool IsActive = true;
 
 int main()
 {
@@ -50,16 +52,17 @@ int main()
 	IVideoDriver* driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
 	IGUIEnvironment* guienv = device->getGUIEnvironment();
-	
+
+	//-------------РЎРѕР·РґР°РЅРёРµ РїР»Р°РЅРµС‚
+	ISceneNode* earth = AddEarth(driver, smgr);
+	//--------
+
 	smgr->addCameraSceneNode(NULL, vector3df(0, 0, -20), vector3df(0, 0, 0));
 
-	//-----Реализация рендеринга в отдельном потоке-----------
-	EventDispatcher dispatcher;
-	dispatcher.eventHandler = eventHandler;
+	//-----Р РµР°Р»РёР·Р°С†РёСЏ СЂРµРЅРґРµСЂРёРЅРіР° РІ РѕС‚РґРµР»СЊРЅРѕРј РїРѕС‚РѕРєРµ-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);
-	device->setEventReceiver(&dispatcher);
 
-	DWORD threadId; // Идентификатор потока
+	DWORD threadId; // РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕС‚РѕРєР°
 	HANDLE thread = CreateThread(NULL, 0, renderWorker, NULL, 0, &threadId);
 
 	MSG msg;
@@ -76,39 +79,23 @@ DWORD WINAPI renderWorker (void* arg)
 	IVideoDriver* driver = device->getVideoDriver();
 	while(device->run())
 	{  
-		// Переводим объект синхронизации в состояние "занято".
-		// Теперь другой поток, вызвав WaitForSingleObject(mutex, INFINITE), будет
-		// ждать, пока объект синхронизации не перейдёт в состояние "свободно"
+		// РџРµСЂРµРІРѕРґРёРј РѕР±СЉРµРєС‚ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё РІ СЃРѕСЃС‚РѕСЏРЅРёРµ "Р·Р°РЅСЏС‚Рѕ".
+		// РўРµРїРµСЂСЊ РґСЂСѓРіРѕР№ РїРѕС‚РѕРє, РІС‹Р·РІР°РІ WaitForSingleObject(mutex, INFINITE), Р±СѓРґРµС‚
+		// Р¶РґР°С‚СЊ, РїРѕРєР° РѕР±СЉРµРєС‚ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё РЅРµ РїРµСЂРµР№РґС‘С‚ РІ СЃРѕСЃС‚РѕСЏРЅРёРµ "СЃРІРѕР±РѕРґРЅРѕ"
 		WaitForSingleObject(mutex, INFINITE);
 
-		// Обращаемся к общим данным здесь. Например к ISceneManager и IVideoDriver
+		// РћР±СЂР°С‰Р°РµРјСЃСЏ Рє РѕР±С‰РёРј РґР°РЅРЅС‹Рј Р·РґРµСЃСЊ. РќР°РїСЂРёРјРµСЂ Рє ISceneManager Рё IVideoDriver
 		driver->beginScene(true, true, video::SColor(0, 0, 0, 0));
 		smgr->drawAll();
 		driver->endScene();
 
-		// Переводим объект синхронизации в состояние "свободно".
-		// Теперь нельзя обращаться к общим данным
+		// РџРµСЂРµРІРѕРґРёРј РѕР±СЉРµРєС‚ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё РІ СЃРѕСЃС‚РѕСЏРЅРёРµ "СЃРІРѕР±РѕРґРЅРѕ".
+		// РўРµРїРµСЂСЊ РЅРµР»СЊР·СЏ РѕР±СЂР°С‰Р°С‚СЊСЃСЏ Рє РѕР±С‰РёРј РґР°РЅРЅС‹Рј
 		ReleaseMutex(mutex);
 
-		// Остонавить работу рендера, что бы уменьшить использование
-		// времени текущим потоком
+		// РћСЃС‚РѕРЅР°РІРёС‚СЊ СЂР°Р±РѕС‚Сѓ СЂРµРЅРґРµСЂР°, С‡С‚Рѕ Р±С‹ СѓРјРµРЅСЊС€РёС‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ
+		// РІСЂРµРјРµРЅРё С‚РµРєСѓС‰РёРј РїРѕС‚РѕРєРѕРј
 		device->yield();
 	}
 	return NULL;
-}
-
-bool eventHandler (const SEvent& irrEvent)
-{
-	// Переводим объект синхронизации в состяние "занято".
-	// Теперь другой поток, вызвав WaitForSingleObject(mutex, INFINITE), будет
-	// ждать, пока объект синхронизации не перейдёт в состояние "свободно"
-	WaitForSingleObject(mutex, INFINITE);
-	
-	// Обращаемся к общим данным здесь. Например к ISceneManager
-	smgr->getActiveCamera()->OnEvent(irrEvent);
-	
-	// Переводим объект синхронизации в состяние "свободно".
-	// Теперь нельзя обращаться к общим данным
-	ReleaseMutex(mutex);
-	return true;
 }

@@ -185,15 +185,31 @@
 			Name="Classes"
 			>
 			<File
-				RelativePath=".\EventDispatcher.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ISceneNodeAnimatorFlyEllipce.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ISceneNodeAnimatorFlyEllipce.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ISceneNodeAnimatorRotation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ISceneNodeAnimatorRotation.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Planets"
+			>
+			<File
+				RelativePath=".\Earth.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Planets.h"
 				>
 			</File>
 		</Filter>

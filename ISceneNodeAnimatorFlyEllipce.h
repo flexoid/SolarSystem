@@ -1,3 +1,6 @@
+﻿//  Класс-аниматор для задания телу движения по эллиптической траектории
+//с возможностью остановить анимацию установкой параметра IsActive в false.
+
 #pragma once
 #include <irrlicht.h>
 
@@ -14,12 +17,12 @@ using namespace gui;
 class ISceneNodeAnimatorFlyEllipce : public ISceneNodeAnimator
 {
 public:
-	ISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 speed, f32 afelij, f32 peregelij);
+	ISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 speed, f32 afelij, f32 peregelij, bool *IsActive);
 	~ISceneNodeAnimatorFlyEllipce(void);
 	virtual void animateNode(ISceneNode* node, u32 timeMs);
 	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const;
 	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0);
-	virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_ROTATION; }
+	virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_FLY_CIRCLE; }
 
 private:
 	u32 StartTime;
@@ -29,6 +32,7 @@ private:
 	f32 deg;
 	core::vector3df Focus;
 	core::vector3df Center;
+	bool *Active;
 };
 
 #endif

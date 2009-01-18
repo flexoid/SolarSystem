@@ -1,6 +1,6 @@
-#include "ISceneNodeAnimatorFlyEllipce.h"
+﻿#include "ISceneNodeAnimatorFlyEllipce.h"
 
-ISceneNodeAnimatorFlyEllipce::ISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 speed, f32 afelij, f32 peregelij)
+ISceneNodeAnimatorFlyEllipce::ISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 speed, f32 afelij, f32 peregelij, bool *IsActive)
 {
 	Speed = speed;
 	X_radius = afelij + peregelij;
@@ -9,24 +9,29 @@ ISceneNodeAnimatorFlyEllipce::ISceneNodeAnimatorFlyEllipce(const core::vector3df
 	Focus = focus;
 	Center.X = Focus.X + ((afelij - peregelij)/2) * cosf(degrees*DEGTORAD);
 	Center.Y = Focus.Y + ((afelij - peregelij)/2) * sinf(degrees*DEGTORAD);
+	Active = IsActive;
 }
 
 void ISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
 {
 	if (node)
 	{
-		u32 diffTime = timeMs - StartTime;
-		if (diffTime != 0)
+		if (*Active)
 		{
-			if (deg >= 360.0f) deg = 0;
-			deg = deg + 1.0f / 1000.0f * diffTime * Speed;
-			f32 rad = deg * DEGTORAD;
-			vector3df newpos = node->getPosition();
-			newpos.X = Center.X + X_radius * cosf(rad);
-			newpos.Z = Center.Z + Y_radius * sinf(rad);
-			node->setPosition(newpos);
-			StartTime = timeMs;
+			u32 diffTime = timeMs - StartTime;
+			if (diffTime != 0)
+			{
+				if (deg >= 360.0f) deg = 0;
+				deg = deg + 1.0f / 1000.0f * diffTime * Speed;
+				f32 rad = deg * DEGTORAD;
+				vector3df newpos = node->getPosition();
+				newpos.X = Center.X + X_radius * cosf(rad);
+				newpos.Z = Center.Z + Y_radius * sinf(rad);
+				node->setPosition(newpos);
+				StartTime = timeMs;
+			}
 		}
+		else StartTime = timeMs;
 	}
 }
 
