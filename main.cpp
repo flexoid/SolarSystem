@@ -16,7 +16,6 @@ IrrlichtDevice* device;
 ISceneManager* smgr;
 HANDLE mutex;
 DWORD WINAPI renderWorker (void* arg);
-bool eventHandler (const SEvent& irrEvent);
 
 //Активность анимации
 bool IsActive = true;
