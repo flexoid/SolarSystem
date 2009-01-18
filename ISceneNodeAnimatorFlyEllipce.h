@@ -17,7 +17,7 @@ using namespace gui;
 class ISceneNodeAnimatorFlyEllipce : public ISceneNodeAnimator
 {
 public:
-	ISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 speed, f32 afelij, f32 peregelij, bool *IsActive);
+	ISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 *speed, f32 afelij, f32 peregelij, bool *IsActive);
 	~ISceneNodeAnimatorFlyEllipce(void);
 	virtual void animateNode(ISceneNode* node, u32 timeMs);
 	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const;
@@ -28,7 +28,7 @@ private:
 	u32 StartTime;
 	f32 X_radius;
 	f32 Y_radius;
-	f32 Speed;
+	f32 *Speed;
 	f32 deg;
 	core::vector3df Focus;
 	core::vector3df Center;

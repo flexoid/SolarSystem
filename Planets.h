@@ -10,8 +10,9 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-//Активность анимации (для доступности всем файлам проекта)
+//Параметры анимации (для доступности всем файлам проекта)
 extern bool IsActive;
+extern f32 speed;
 
 //Функции инициализации планет
 ISceneNode* AddEarth(IVideoDriver* driver, ISceneManager* smgr);

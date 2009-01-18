@@ -17,8 +17,9 @@ ISceneManager* smgr;
 HANDLE mutex;
 DWORD WINAPI renderWorker (void* arg);
 
-//Активность анимации
+//Параметры анимации
 bool IsActive = true;
+f32 speed = 100.0f;
 
 int main()
 {
