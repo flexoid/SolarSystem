@@ -1,7 +1,8 @@
 ﻿#include <irrlicht.h>
 #include <windows.h>
 #include <iostream>
-#include "Planets.h"
+#include "SSPlanets.h"
+#include "SSEventReceiver.h"
 
 #pragma comment(lib, "Irrlicht.lib")
 
@@ -12,10 +13,13 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-IrrlichtDevice* device;
-ISceneManager* smgr;
 HANDLE mutex;
 DWORD WINAPI renderWorker (void* arg);
+
+IrrlichtDevice* device;
+IVideoDriver* driver;
+ISceneManager* smgr;
+IGUIEnvironment* guienv;
 
 //Параметры анимации
 bool IsActive = true;
@@ -49,15 +53,18 @@ int main()
 		32, false, false, false, 0);
 	device->setWindowCaption(L"SunSyst   by FlexoID & Evilguc");
 
-	IVideoDriver* driver = device->getVideoDriver();
+	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
-	IGUIEnvironment* guienv = device->getGUIEnvironment();
+	guienv = device->getGUIEnvironment();
+
+	SSEventReceiver receiver;
+	device->setEventReceiver(&receiver);
 
 	//-------------Создание планет
 	ISceneNode* earth = AddEarth(driver, smgr);
 	//--------
 
-	smgr->addCameraSceneNode(NULL, vector3df(0, 0, -20), vector3df(0, 0, 0));
+	smgr->addCameraSceneNode(NULL, vector3df(0, 0, -50), vector3df(0, 0, 0));
 
 	//-----Реализация рендеринга в отдельном потоке-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);
@@ -87,6 +94,7 @@ DWORD WINAPI renderWorker (void* arg)
 		// Обращаемся к общим данным здесь. Например к ISceneManager и IVideoDriver
 		driver->beginScene(true, true, video::SColor(0, 0, 0, 0));
 		smgr->drawAll();
+		guienv->drawAll();
 		driver->endScene();
 
 		// Переводим объект синхронизации в состояние "свободно".

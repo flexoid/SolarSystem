@@ -1,4 +1,4 @@
-#include "Planets.h"
+#include "SSPlanets.h"
 
 ISceneNode* AddEarth(IVideoDriver* driver, ISceneManager* smgr)
 {

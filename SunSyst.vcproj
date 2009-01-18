@@ -200,6 +200,10 @@
 				RelativePath=".\ISceneNodeAnimatorRotation.h"
 				>
 			</File>
+			<File
+				RelativePath=".\SSEventReceiver.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Planets"
@@ -209,7 +213,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Planets.h"
+				RelativePath=".\SSPlanets.h"
 				>
 			</File>
 		</Filter>
