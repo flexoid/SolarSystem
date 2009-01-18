@@ -185,6 +185,10 @@
 			Name="Classes"
 			>
 			<File
+				RelativePath=".\EventDispatcher.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ISceneNodeAnimatorFlyEllipce.cpp"
 				>
 			</File>

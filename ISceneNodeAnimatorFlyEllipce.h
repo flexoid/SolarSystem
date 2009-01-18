@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <irrlicht.h>
 
 #ifndef __C_SCENE_NODE_ANIMATOR_FLY_ELLIPCE_H_INCLUDED__

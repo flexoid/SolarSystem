@@ -1,4 +1,4 @@
-﻿#include "ISceneNodeAnimatorFlyEllipce.h"
+#include "ISceneNodeAnimatorFlyEllipce.h"
 
 ISceneNodeAnimatorFlyEllipce::ISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 speed, f32 afelij, f32 peregelij)
 {
