@@ -29,14 +29,14 @@ private:
 	u32 StartTime;
 	f32 X_radius;
 	f32 Y_radius;
-	f32 Speed;
-	f32 *koeffSpeed;
+	f32 speed;
+	f32 *koeffOfSpeed;
 	f32 deg;
 	f32 rotateDeg;
 	f32 orbDeg;
-	core::vector3df Focus;
-	core::vector3df Center;
-	bool *Active;
+	core::vector3df focus;
+	core::vector3df center;
+	bool *IsActive;
 };
 
 #endif
