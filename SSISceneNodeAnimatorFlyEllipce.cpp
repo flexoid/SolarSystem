@@ -1,16 +1,19 @@
 ﻿#include "SSISceneNodeAnimatorFlyEllipce.h"
+#include <iostream>
 
-SSISceneNodeAnimatorFlyEllipce::SSISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive)
+SSISceneNodeAnimatorFlyEllipce::SSISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 rotateDeg, f32 orbDeg, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive)
 {
 	Speed = speed;
 	koeffSpeed = koeffOfSpeed;
-	X_radius = afelij + peregelij;
-	Y_radius = sqrtf(X_radius*X_radius - (afelij - peregelij)*(afelij - peregelij));
+	X_radius = (afelij + peregelij)/2;
+	Y_radius = sqrtf(X_radius*X_radius - ((afelij - peregelij)/2)*((afelij - peregelij)/2));
+	std::cout << X_radius << std::endl << Y_radius << std::endl;
 	deg = 0;
 	Focus = focus;
-	Center.X = Focus.X + ((afelij - peregelij)/2) * cosf(degrees*DEGTORAD);
-	Center.Y = Focus.Y + ((afelij - peregelij)/2) * sinf(degrees*DEGTORAD);
+	Center.X = Focus.X + ((afelij - peregelij)/2);
 	Active = IsActive;
+	this->rotateDeg = rotateDeg;
+	this->orbDeg = orbDeg;
 }
 
 void SSISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
@@ -24,11 +27,10 @@ void SSISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
 			{
 				if (deg >= 360.0f && deg <= -360.0f) deg = 0;
 				deg += 1.0f / 1000.0f * diffTime * Speed * *koeffSpeed;
-				f32 rad = deg * DEGTORAD;
 				vector3df newpos = node->getPosition();
-				newpos.X = Center.X + X_radius * cosf(rad);
-				newpos.Z = Center.Z + Y_radius * sinf(rad);
-
+				newpos.X = Center.X + X_radius * cosf(deg * DEGTORAD);
+				newpos.Z = Center.Z + Y_radius * sinf(deg * DEGTORAD);
+				newpos.Y = Center.Y + X_radius * sinf(orbDeg * DEGTORAD) * sinf((deg + rotateDeg) * DEGTORAD);
 				node->setPosition(newpos);
 				StartTime = timeMs;
 			}

@@ -61,10 +61,14 @@ int main()
 	device->setEventReceiver(&receiver);
 
 	//-------------Создание планет
-	ISceneNode* earth = AddEarth(driver, smgr);
+	ISceneNode* sun = AddSun();
+	ISceneNode* earth = AddEarth();
+	ISceneNode* pluto = AddPluto();
 	//--------
 
-	smgr->addCameraSceneNode(NULL, vector3df(0, 0, -50), vector3df(0, 0, 0));
+	ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0, 50.0f, 50.0f, -1, 0, 0);
+	camera->setPosition(vector3df(-50.0f, 0, 0));
+	camera->setTarget(sun->getPosition());
 
 	//-----Реализация рендеринга в отдельном потоке-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);

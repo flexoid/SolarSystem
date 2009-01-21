@@ -16,6 +16,16 @@ using namespace gui;
 extern bool IsActive;
 extern f32 koeffSpeed;
 
+//√лобальные экземпл€ры класса
+extern IVideoDriver* driver;
+extern ISceneManager* smgr;
+
+//√лобальные обьекты
+extern ISceneNode* sun;
+
 //‘ункции инициализации планет
-ISceneNode* AddEarth(IVideoDriver* driver, ISceneManager* smgr);
+ISceneNode* AddSun();
+ISceneNode* AddEarth();
+ISceneNode* AddPluto();
+
 #endif

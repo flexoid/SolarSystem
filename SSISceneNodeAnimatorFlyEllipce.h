@@ -13,10 +13,12 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
+extern IVideoDriver* driver;
+
 class SSISceneNodeAnimatorFlyEllipce : public ISceneNodeAnimator
 {
 public:
-	SSISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 degrees, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive);
+	SSISceneNodeAnimatorFlyEllipce::SSISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 rotateDeg, f32 orbDeg, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive);
 	~SSISceneNodeAnimatorFlyEllipce(void);
 	virtual void animateNode(ISceneNode* node, u32 timeMs);
 	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const;
@@ -30,6 +32,8 @@ private:
 	f32 Speed;
 	f32 *koeffSpeed;
 	f32 deg;
+	f32 rotateDeg;
+	f32 orbDeg;
 	core::vector3df Focus;
 	core::vector3df Center;
 	bool *Active;

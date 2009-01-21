@@ -213,7 +213,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Pluto.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SSPlanets.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sun.cpp"
 				>
 			</File>
 		</Filter>
