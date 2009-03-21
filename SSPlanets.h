@@ -13,7 +13,8 @@ using namespace io;
 using namespace gui;
 
 //ѕараметры анимации (дл€ доступности всем файлам проекта)
-extern bool IsActive;
+extern bool IsActiveMoving;
+extern bool IsActiveRotating;
 extern f32 koeffSpeed;
 
 //√лобальные экземпл€ры класса

@@ -17,7 +17,7 @@ class SSISceneNodeAnimatorRotation : public ISceneNodeAnimator
 {
 
 public:
-	SSISceneNodeAnimatorRotation(u32 time, const core::vector3df& rotation, f32* koeffOfSpeed, bool *IsActive);
+	SSISceneNodeAnimatorRotation(const core::vector3df& rotation, f32* koeffOfSpeed, bool *IsActive);
 	virtual ~SSISceneNodeAnimatorRotation();
 	virtual void animateNode(ISceneNode* node, u32 timeMs);
 	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const;

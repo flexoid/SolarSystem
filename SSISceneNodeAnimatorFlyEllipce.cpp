@@ -5,19 +5,21 @@ SSISceneNodeAnimatorFlyEllipce::SSISceneNodeAnimatorFlyEllipce(const core::vecto
 {
 	this->speed = speed;
 	this->koeffOfSpeed = koeffOfSpeed;
+	this->afelij = afelij;
+	this->peregelij = peregelij;
 	X_radius = (afelij + peregelij)/2;
 	Y_radius = sqrtf(X_radius*X_radius - ((afelij - peregelij)/2)*((afelij - peregelij)/2));
-	std::cout << X_radius << std::endl << Y_radius << std::endl;
 	deg = 0;
 	this->focus = focus;
-	center.X = focus.X + ((afelij - peregelij)/2);
 	this->IsActive = IsActive;
 	this->rotateDeg = rotateDeg;
 	this->orbDeg = orbDeg;
+	this->StartTime = 0;
 }
 
 void SSISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
 {
+	if (StartTime == 0) StartTime = timeMs;
 	if (node)
 	{
 		if (*IsActive)
@@ -25,6 +27,7 @@ void SSISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
 			u32 diffTime = timeMs - StartTime;
 			if (diffTime != 0)
 			{
+				center.X = focus.X + ((afelij - peregelij)/2);
 				if (deg >= 360.0f && deg <= -360.0f) deg = 0;
 				deg += 1.0f / 1000.0f * diffTime * speed * *koeffOfSpeed;
 				vector3df newpos = node->getPosition();

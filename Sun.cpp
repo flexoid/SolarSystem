@@ -5,8 +5,8 @@ ISceneNode *sun;
 ISceneNode* AddSun()
 {
 	//---------Демонстрация
-	sun = smgr->addSphereSceneNode(8.0, 16, 0, -1, vector3df(10, 0, 0), vector3df(0, 0, 0), vector3df(1.0, 1.0, 1.0));
-	SSISceneNodeAnimatorRotation *animSunRot = new SSISceneNodeAnimatorRotation(30, vector3df(0, 0.8f, 0), &koeffSpeed, &IsActive);
+	sun = smgr->addSphereSceneNode(100.0, 64, 0, -1, vector3df(0, 0, 0), vector3df(0, 0, 0), vector3df(1.0, 1.0, 1.0));
+	SSISceneNodeAnimatorRotation *animSunRot = new SSISceneNodeAnimatorRotation(vector3df(0, -0.8f, 0), &koeffSpeed, &IsActiveRotating);
 	if (sun)
 	{
 		sun->setMaterialFlag(EMF_LIGHTING, false);

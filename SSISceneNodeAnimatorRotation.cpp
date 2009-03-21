@@ -1,9 +1,9 @@
 #include "SSISceneNodeAnimatorRotation.h"
 
-SSISceneNodeAnimatorRotation::SSISceneNodeAnimatorRotation(u32 time, const core::vector3df& rotation, f32* koeffOfSpeed, bool *IsActive)
+SSISceneNodeAnimatorRotation::SSISceneNodeAnimatorRotation(const core::vector3df& rotation, f32* koeffOfSpeed, bool *IsActive)
 {
 	this->rotation = rotation;
-	this->StartTime = time;
+	this->StartTime = 0.0f;
 	this->IsActive = IsActive;
 	this->koeffOfSpeed = koeffOfSpeed;
 }
@@ -14,6 +14,7 @@ SSISceneNodeAnimatorRotation::~SSISceneNodeAnimatorRotation()
 
 void SSISceneNodeAnimatorRotation::animateNode(ISceneNode* node, u32 timeMs)
 {
+	if (StartTime == 0.0) StartTime = timeMs;
 	if (node)
 	{
 		if (*IsActive)

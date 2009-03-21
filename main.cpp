@@ -22,7 +22,8 @@ ISceneManager* smgr;
 IGUIEnvironment* guienv;
 
 //Параметры анимации
-bool IsActive = true;
+bool IsActiveMoving = true;
+bool IsActiveRotating = true;
 f32 koeffSpeed = 1.0f;
 
 int main()
@@ -65,13 +66,14 @@ int main()
 	ISceneNode* earth = AddEarth();
 	ISceneNode* pluto = AddPluto();
 	//--------
-
-	ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0, 50.0f, 50.0f, -1, 0, 0);
-	camera->setPosition(vector3df(-50.0f, 0, 0));
+	
+	ICameraSceneNode *camera = smgr->addCameraSceneNode(0, vector3df(-300.0f, 0, -300.0f));
 	camera->setTarget(sun->getPosition());
 
 	//-----Реализация рендеринга в отдельном потоке-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);
+
+	//SSMoveCameraTo(camera, sun->getPosition(), sun->getPosition());
 
 	DWORD threadId; // Идентификатор потока
 	HANDLE thread = CreateThread(NULL, 0, renderWorker, NULL, 0, &threadId);
@@ -87,6 +89,7 @@ int main()
 
 DWORD WINAPI renderWorker (void* arg)
 {
+	u32 frames = 0;
 	IVideoDriver* driver = device->getVideoDriver();
 	while(device->run())
 	{  
@@ -100,6 +103,17 @@ DWORD WINAPI renderWorker (void* arg)
 		smgr->drawAll();
 		guienv->drawAll();
 		driver->endScene();
+
+		if (++frames==100)
+		{
+			core::stringw str = L"Irrlicht Engine [";
+			str += driver->getName();
+			str += L"] FPS: ";
+			str += (s32)driver->getFPS();
+
+			device->setWindowCaption(str.c_str());
+			frames=0;
+		}
 
 		// Переводим объект синхронизации в состояние "свободно".
 		// Теперь нельзя обращаться к общим данным

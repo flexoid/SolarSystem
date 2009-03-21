@@ -37,6 +37,7 @@ private:
 	core::vector3df focus;
 	core::vector3df center;
 	bool *IsActive;
+	f32 afelij, peregelij;
 };
 
 #endif
