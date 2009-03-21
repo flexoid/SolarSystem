@@ -188,22 +188,50 @@
 				RelativePath=".\SSEventReceiver.h"
 				>
 			</File>
-			<File
-				RelativePath=".\SSISceneNodeAnimatorFlyEllipce.cpp"
+			<Filter
+				Name="GUI"
 				>
-			</File>
-			<File
-				RelativePath=".\SSISceneNodeAnimatorFlyEllipce.h"
+				<Filter
+					Name="Button"
+					>
+				</Filter>
+				<Filter
+					Name="ScrollBar"
+					>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Animators"
 				>
-			</File>
-			<File
-				RelativePath=".\SSISceneNodeAnimatorRotation.cpp"
+				<File
+					RelativePath=".\SSISceneNodeAnimatorFlyEllipce.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SSISceneNodeAnimatorFlyEllipce.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SSISceneNodeAnimatorRotation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SSISceneNodeAnimatorRotation.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="SYS"
 				>
-			</File>
-			<File
-				RelativePath=".\SSISceneNodeAnimatorRotation.h"
-				>
-			</File>
+				<Filter
+					Name="Delegates"
+					>
+					<Filter
+						Name="void"
+						>
+					</Filter>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Planets"
