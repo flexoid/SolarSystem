@@ -1,7 +1,7 @@
-﻿#include "SSISceneNodeAnimatorFlyEllipce.h"
+﻿#include "SSFlyEllipceAnimator.h"
 #include <iostream>
 
-SSISceneNodeAnimatorFlyEllipce::SSISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 rotateDeg, f32 orbDeg, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive)
+SSFlyEllipceAnimator::SSFlyEllipceAnimator(const core::vector3df& focus, f32 rotateDeg, f32 orbDeg, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive)
 {
 	this->speed = speed;
 	this->koeffOfSpeed = koeffOfSpeed;
@@ -17,7 +17,7 @@ SSISceneNodeAnimatorFlyEllipce::SSISceneNodeAnimatorFlyEllipce(const core::vecto
 	this->StartTime = 0;
 }
 
-void SSISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
+void SSFlyEllipceAnimator::animateNode(ISceneNode* node, u32 timeMs)
 {
 	if (StartTime == 0) StartTime = timeMs;
 	if (node)
@@ -42,17 +42,17 @@ void SSISceneNodeAnimatorFlyEllipce::animateNode(ISceneNode* node, u32 timeMs)
 	}
 }
 
-SSISceneNodeAnimatorFlyEllipce::~SSISceneNodeAnimatorFlyEllipce(void)
+SSFlyEllipceAnimator::~SSFlyEllipceAnimator(void)
 {
 }
 
-void SSISceneNodeAnimatorFlyEllipce::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
+void SSFlyEllipceAnimator::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
 {
 	//out->addVector3d("Rotation", Rotation);
 }
 
 //! Reads attributes of the scene node animator.
-void SSISceneNodeAnimatorFlyEllipce::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
+void SSFlyEllipceAnimator::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
 {
 	//Rotation = in->getAttributeAsVector3d("Rotation");
 }

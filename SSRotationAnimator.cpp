@@ -1,6 +1,6 @@
-#include "SSISceneNodeAnimatorRotation.h"
+#include "SSRotationAnimator.h"
 
-SSISceneNodeAnimatorRotation::SSISceneNodeAnimatorRotation(const core::vector3df& rotation, f32* koeffOfSpeed, bool *IsActive)
+SSRotationAnimator::SSRotationAnimator(const core::vector3df& rotation, f32* koeffOfSpeed, bool *IsActive)
 {
 	this->rotation = rotation;
 	this->StartTime = 0.0f;
@@ -8,11 +8,11 @@ SSISceneNodeAnimatorRotation::SSISceneNodeAnimatorRotation(const core::vector3df
 	this->koeffOfSpeed = koeffOfSpeed;
 }
 
-SSISceneNodeAnimatorRotation::~SSISceneNodeAnimatorRotation()
+SSRotationAnimator::~SSRotationAnimator()
 {
 }
 
-void SSISceneNodeAnimatorRotation::animateNode(ISceneNode* node, u32 timeMs)
+void SSRotationAnimator::animateNode(ISceneNode* node, u32 timeMs)
 {
 	if (StartTime == 0.0) StartTime = timeMs;
 	if (node)
@@ -33,13 +33,13 @@ void SSISceneNodeAnimatorRotation::animateNode(ISceneNode* node, u32 timeMs)
 }
 
 
-void SSISceneNodeAnimatorRotation::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
+void SSRotationAnimator::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
 {
 	out->addVector3d("Rotation", rotation);
 }
 
 
-void SSISceneNodeAnimatorRotation::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
+void SSRotationAnimator::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
 {
 	rotation = in->getAttributeAsVector3d("Rotation");
 }

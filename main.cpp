@@ -1,8 +1,8 @@
 ﻿#include <irrlicht.h>
-#include <windows.h>
 #include <iostream>
 #include "SSPlanets.h"
 #include "SSEventReceiver.h"
+#include "SSMoveCameraTo.h"
 
 #pragma comment(lib, "Irrlicht.lib")
 
@@ -24,7 +24,14 @@ IGUIEnvironment* guienv;
 //Параметры анимации
 bool IsActiveMoving = true;
 bool IsActiveRotating = true;
-f32 koeffSpeed = 1.0f;
+f32 koeffSpeed = 0.3f;
+
+//Планеты
+ISceneNode* sun;
+ISceneNode* earth;
+ISceneNode* pluto;
+
+ICameraSceneNode *camera; //Камера
 
 int main()
 {
@@ -50,7 +57,7 @@ int main()
 	default: return 1;
 	}
 
-	device = createDevice(driverType, dimension2d<s32>(640, 480),
+	device = createDevice(driverType, dimension2d<s32>(800, 600),
 		32, false, false, false, 0);
 	device->setWindowCaption(L"SunSyst   by FlexoID & Evilguc");
 
@@ -62,18 +69,15 @@ int main()
 	device->setEventReceiver(&receiver);
 
 	//-------------Создание планет
-	ISceneNode* sun = AddSun();
-	ISceneNode* earth = AddEarth();
-	ISceneNode* pluto = AddPluto();
+	sun = AddSun();
+	earth = AddEarth();
+	pluto = AddPluto();
 	//--------
 	
-	ICameraSceneNode *camera = smgr->addCameraSceneNode(0, vector3df(-300.0f, 0, -300.0f));
-	camera->setTarget(sun->getPosition());
+	camera = smgr->addCameraSceneNode(0, vector3df(-300.0f, 0, -300.0f));
 
 	//-----Реализация рендеринга в отдельном потоке-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);
-
-	//SSMoveCameraTo(camera, sun->getPosition(), sun->getPosition());
 
 	DWORD threadId; // Идентификатор потока
 	HANDLE thread = CreateThread(NULL, 0, renderWorker, NULL, 0, &threadId);
@@ -86,19 +90,16 @@ int main()
 	}
 }
 
-
 DWORD WINAPI renderWorker (void* arg)
 {
 	u32 frames = 0;
 	IVideoDriver* driver = device->getVideoDriver();
 	while(device->run())
-	{  
-		// Переводим объект синхронизации в состояние "занято".
-		// Теперь другой поток, вызвав WaitForSingleObject(mutex, INFINITE), будет
-		// ждать, пока объект синхронизации не перейдёт в состояние "свободно"
+	{
 		WaitForSingleObject(mutex, INFINITE);
 
-		// Обращаемся к общим данным здесь. Например к ISceneManager и IVideoDriver
+		MovingCamera(); // Перемещение камеры
+
 		driver->beginScene(true, true, video::SColor(0, 0, 0, 0));
 		smgr->drawAll();
 		guienv->drawAll();
@@ -115,12 +116,8 @@ DWORD WINAPI renderWorker (void* arg)
 			frames=0;
 		}
 
-		// Переводим объект синхронизации в состояние "свободно".
-		// Теперь нельзя обращаться к общим данным
 		ReleaseMutex(mutex);
 
-		// Остонавить работу рендера, что бы уменьшить использование
-		// времени текущим потоком
 		device->yield();
 	}
 	return NULL;

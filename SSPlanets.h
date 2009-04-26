@@ -1,6 +1,6 @@
 #include <irrlicht.h>
-#include "SSISceneNodeAnimatorFlyEllipce.h"
-#include "SSISceneNodeAnimatorRotation.h"
+#include "SSFlyEllipceAnimator.h"
+#include "SSRotationAnimator.h"
 
 #ifndef __SS_PLANETS_H_INCLUDED__
 #define __SS_PLANETS_H_INCLUDED__

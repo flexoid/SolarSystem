@@ -1,5 +1,4 @@
-#ifndef __SS_MOVE_CAMERA_TO_H_INCLUDED__
-#define __SS_MOVE_CAMERA_TO_H_INCLUDED__
+#pragma once;
 
 #include <irrlicht.h>
 #include <windows.h>
@@ -13,9 +12,11 @@ using namespace gui;
 
 using namespace std;
 
-extern IVideoDriver* driver;
-extern HANDLE mutex;
+extern IrrlichtDevice* device;
+extern ISceneManager* smgr;
+extern bool IsActiveMoving;
+extern bool IsActiveRotating;
 
-void SSMoveCameraTo(ICameraSceneNode* camera, const core::vector3df& endPos, const core::vector3df& target);
-
-#endif
+void SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode, u32 TimeForWay);
+void MovingCamera(void);
+vector3df CalcFinalPos(ISceneNode* node, f32 length);

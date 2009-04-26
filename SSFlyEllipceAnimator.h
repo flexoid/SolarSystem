@@ -15,15 +15,15 @@ using namespace gui;
 
 extern IVideoDriver* driver;
 
-class SSISceneNodeAnimatorFlyEllipce : public ISceneNodeAnimator
+class SSFlyEllipceAnimator : public ISceneNodeAnimator
 {
 public:
-	SSISceneNodeAnimatorFlyEllipce::SSISceneNodeAnimatorFlyEllipce(const core::vector3df& focus, f32 rotateDeg, f32 orbDeg, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive);
-	~SSISceneNodeAnimatorFlyEllipce(void);
+	SSFlyEllipceAnimator::SSFlyEllipceAnimator(const core::vector3df& focus, f32 rotateDeg, f32 orbDeg, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive);
+	~SSFlyEllipceAnimator(void);
 	virtual void animateNode(ISceneNode* node, u32 timeMs);
 	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const;
 	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0);
-	virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_FLY_CIRCLE; }
+	virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_UNKNOWN ; }
 
 private:
 	u32 StartTime;

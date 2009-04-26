@@ -13,16 +13,16 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-class SSISceneNodeAnimatorRotation : public ISceneNodeAnimator
+class SSRotationAnimator : public ISceneNodeAnimator
 {
 
 public:
-	SSISceneNodeAnimatorRotation(const core::vector3df& rotation, f32* koeffOfSpeed, bool *IsActive);
-	virtual ~SSISceneNodeAnimatorRotation();
+	SSRotationAnimator(const core::vector3df& rotation, f32* koeffOfSpeed, bool *IsActive);
+	virtual ~SSRotationAnimator();
 	virtual void animateNode(ISceneNode* node, u32 timeMs);
 	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const;
 	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0);
-	virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_ROTATION; }
+	virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_UNKNOWN; }
 
 private:
 	core::vector3df rotation;

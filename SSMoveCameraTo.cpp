@@ -1,117 +1,88 @@
 #include "SSMoveCameraTo.h"
-#include <iostream>
+#include "SSCameraRotateAnimator.h"
 
-ICameraSceneNode* cam;
-vector3df endPos;
-vector3df target;
-vector3df startPos;
+bool startAnimFlag = false;
+bool checkFlag = false;
+vector3df StartPosition;
+vector3df FinalPosition;
+vector3df MoveVector;
+vector3df FinalTarget;
+vector3df StartTarget;
+ICameraSceneNode *CamToMove;
+u32 TimeForWay;
+ISceneNode* FinalNode = 0;
+f32 radius;
+HANDLE CamMutex;
+bool CorrectPosFlag = false;
 
-bool doRotating = false;
+SSCameraRotateAnimator* animRot;
+ISceneNodeAnimator* animMove;
 
-DWORD WINAPI Rotating(void* arg);
-DWORD WINAPI Moving(void* arg);
-DWORD WINAPI Temp(void* arg);
-
-void SSMoveCameraTo(ICameraSceneNode* cam, const core::vector3df& endPos, const core::vector3df& target)
+void SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode, u32 TimeForWay)
 {
-	::cam = cam;
-	::endPos = endPos;
-	::target = target;
-	DWORD threadId; // Идентификатор потока
-	doRotating = true;
-	HANDLE thread1 = CreateThread(NULL, 0, Moving, NULL, 0, &threadId);
-	//HANDLE thread2 = CreateThread(NULL, 0, Rotating, NULL, 0, &threadId);
-	HANDLE thread3 = CreateThread(NULL, 0, Temp, NULL, 0, &threadId);
+	CamMutex = CreateMutex (NULL, FALSE, NULL);
+	WaitForSingleObject(CamMutex, INFINITE);
+	CamToMove->removeAnimators();
+	IsActiveMoving = false;
+	IsActiveRotating = false;
+	startAnimFlag = true;
+	checkFlag = true;
+	CorrectPosFlag = false;
+	::CamToMove = CamToMove;
+	IAttributes *attrib = device->getFileSystem()->createEmptyAttributes();
+	FinalNode->serializeAttributes(attrib);
+	radius = attrib->getAttributeAsFloat("Radius");
+	::FinalPosition = CalcFinalPos(FinalNode, radius);
+	::FinalTarget = FinalNode->getPosition();
+	::TimeForWay = TimeForWay;
+	::FinalNode = FinalNode;
+	ReleaseMutex(CamMutex);
 }
 
-DWORD WINAPI Rotating(void* arg)
+vector3df CalcFinalPos(ISceneNode* node, f32 length)
 {
-	Beep(500, 100);
-	f32 k = 0;
-	f32 alpha_full = 1.0f;
-	f32 alpha;
-
-	while(1)
+	vector3df pos = node->getPosition();
+	vector3df FinalPos;
+	if (pos != vector3df(0,0,0))
 	{
-		WaitForSingleObject(mutex, INFINITE);
-
-		vector3df tmp1 = cam->getTarget() - cam->getPosition();
-		vector3df tmp2 = endPos - cam->getPosition();
-
-		alpha_full = acosf((tmp1.dotProduct(tmp2)) / 
-			(tmp1.getLength() * tmp2.getLength()));
-
-		if (alpha_full > 0.001f)
-		{
-			alpha = 0.0005f;
-
-			cout << alpha_full << endl;
-
-			k = 0.01f;
-			vector3df rotVec = tmp1.crossProduct(tmp2);
-			rotVec.normalize();
-
-			f32 rotMatrix[3][3] =
-			{
-				{ cosf(alpha) + (1 - cosf(alpha)) * powf(rotVec.X, 2),
-				(1 - cosf(alpha)) * rotVec.X * rotVec.Y - sinf(alpha) * rotVec.Z,
-				(1 - cosf(alpha)) * rotVec.X * rotVec.Z + sinf(alpha) * rotVec.Y },
-
-				{ (1 - cosf(alpha)) * rotVec.Y * rotVec.X + sinf(alpha) * rotVec.Z,
-				cosf(alpha) + (1 - cosf(alpha)) * powf(rotVec.Y, 2),
-				(1 - cosf(alpha)) * rotVec.Y * rotVec.Z - sinf(alpha) * rotVec.X },
-
-				{ (1 - cosf(alpha)) * rotVec.Z * rotVec.X - sinf(alpha) * rotVec.Y,
-				(1 - cosf(alpha)) * rotVec.Z * rotVec.Y + sinf(alpha) * rotVec.X,
-				cosf(alpha) + (1 - cosf(alpha)) * powf(rotVec.Z, 2) }
-			};
-
-			vector3df final = vector3df(
-				tmp1.X * rotMatrix[0][0] + 
-				tmp1.Y * rotMatrix[0][1] + 
-				tmp1.Z * rotMatrix[0][2],
-				tmp1.X * rotMatrix[1][0] + 
-				tmp1.Y * rotMatrix[1][1] + 
-				tmp1.Z * rotMatrix[1][2],
-				tmp1.X * rotMatrix[2][0] + 
-				tmp1.Y * rotMatrix[2][1] + 
-				tmp1.Z * rotMatrix[2][2]
-			);
-
-			cam->setTarget(cam->getPosition() + final);
-		}
-		else
-		{
-			cam->setTarget(target);
-			cout << "setTarget\n";
-		}
-		ReleaseMutex(mutex);
+		f32 a = sqrtf(pos.X*pos.X + pos.Z*pos.Z);
+		f32 cosA = pos.X / a;
+		f32 sinA = pos.Z / a;
+		FinalPos.X = (a + length * 2) * cosA;
+		FinalPos.Z = (a + length * 2) * sinA;
+		FinalPos.Y = pos.Y + length;
 	}
-	return NULL;
-}
-
-
-DWORD WINAPI Moving(void* arg)
-{
-	Sleep(1000);
-	DWORD threadId;
-	HANDLE thread1 = CreateThread(NULL, 0, Rotating, NULL, 0, &threadId);
-	while(1)
+	else
 	{
-		WaitForSingleObject(mutex, INFINITE);
-		cam->setPosition(cam->getPosition() + vector3df(0.1f, 0.2f, 0.1f));
-		ReleaseMutex(mutex);
-		Sleep(10);
+		FinalPos.X = length * 2;
+		FinalPos.Y = length;
+		FinalPos.Z = length * 2;
 	}
-	doRotating = false;
-	return NULL;
+	return FinalPos;
 }
 
-DWORD WINAPI Temp(void* arg)
+void MovingCamera(void)
 {
-	Sleep(7000);
-	WaitForSingleObject(mutex, INFINITE);
-	cam->setTarget(cam->getTarget() + vector3df(154.4f, 243.7f, 121.1f));
-	ReleaseMutex(mutex);
-	return NULL;
+	WaitForSingleObject(CamMutex, INFINITE);
+	if (startAnimFlag)
+	{
+		animRot = new SSCameraRotateAnimator(CamToMove, FinalTarget, FinalNode, radius);
+		animMove = smgr->createFlyStraightAnimator(CamToMove->getPosition(), FinalPosition, TimeForWay);
+		CamToMove->addAnimator(animRot);
+		CamToMove->addAnimator(animMove);
+		startAnimFlag = false;
+	}
+
+	else if(checkFlag)
+	{
+		if ((CamToMove->getPosition() - FinalPosition).getLengthSQ() < 1.0f)
+		{
+			CorrectPosFlag = true;
+			IsActiveMoving = true;
+			IsActiveRotating = true;
+			checkFlag = false;
+			CamToMove->removeAnimator(animMove);
+		}
+	}
+	ReleaseMutex(CamMutex);
 }

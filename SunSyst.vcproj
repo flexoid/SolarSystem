@@ -204,19 +204,27 @@
 				Name="Animators"
 				>
 				<File
-					RelativePath=".\SSISceneNodeAnimatorFlyEllipce.cpp"
+					RelativePath=".\SSCameraRotateAnimator.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\SSISceneNodeAnimatorFlyEllipce.h"
+					RelativePath=".\SSCameraRotateAnimator.h"
 					>
 				</File>
 				<File
-					RelativePath=".\SSISceneNodeAnimatorRotation.cpp"
+					RelativePath=".\SSFlyEllipceAnimator.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\SSISceneNodeAnimatorRotation.h"
+					RelativePath=".\SSFlyEllipceAnimator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SSRotationAnimator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SSRotationAnimator.h"
 					>
 				</File>
 			</Filter>
@@ -256,6 +264,18 @@
 		<Filter
 			Name="Functions"
 			>
+			<Filter
+				Name="CameraMoving"
+				>
+				<File
+					RelativePath=".\SSMoveCameraTo.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SSMoveCameraTo.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>
