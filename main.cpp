@@ -30,8 +30,44 @@ f32 koeffSpeed = 0.3f;
 ISceneNode* sun;
 ISceneNode* earth;
 ISceneNode* pluto;
+ISceneNode* mercury;
+ISceneNode* venus;
+ISceneNode* mars;
+ISceneNode* jupiter;
+ISceneNode* saturn;
+ISceneNode* uranus;
+ISceneNode* neptune;
 
 ICameraSceneNode *camera; //Камера
+
+void test(void)
+{
+	/*
+	while(1)
+	{
+		u32 time;
+		Sleep(3000);
+		time = SSMoveCameraTo(camera, earth);
+		Sleep(time + 2000);
+		time = SSMoveCameraTo(camera, mercury);
+		Sleep(time + 2000);
+		time = SSMoveCameraTo(camera, pluto);
+		Sleep(time + 2000);
+		time = SSMoveCameraTo(camera, venus);
+		Sleep(time + 2000);
+		time = SSMoveCameraTo(camera, mars);
+		Sleep(time + 2000);
+		time = SSMoveCameraTo(camera, jupiter);
+		Sleep(time + 2000);
+		time = SSMoveCameraTo(camera, saturn);
+		Sleep(time + 2000);
+		time = SSMoveCameraTo(camera, uranus);
+		Sleep(time + 2000);
+		time = SSMoveCameraTo(camera, neptune);
+		Sleep(time + 2000);
+	}
+	*/
+}
 
 int main()
 {
@@ -72,15 +108,33 @@ int main()
 	sun = AddSun();
 	earth = AddEarth();
 	pluto = AddPluto();
+	mercury = AddMercury();
+	venus = AddVenus();
+	mars = AddMars();
+	jupiter = AddJupiter();
+	saturn = AddSaturn();
+	uranus = AddUranus();
+	neptune = AddNeptune();
 	//--------
 	
-	camera = smgr->addCameraSceneNode(0, vector3df(-300.0f, 0, -300.0f));
+	//----Небо
+	ITexture *skyTexture = driver->getTexture(".\\data\\hipp8.jpg");
+	smgr->addSkyBoxSceneNode(skyTexture, skyTexture, skyTexture, 
+		skyTexture, skyTexture, skyTexture);
+	//--------
+
+	//camera = smgr->addCameraSceneNode(0, vector3df(-300.0f, 0, -300.0f));
+	camera = smgr->addCameraSceneNodeFPS();
+	camera->setFarValue(999999.0f);
 
 	//-----Реализация рендеринга в отдельном потоке-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);
 
 	DWORD threadId; // Идентификатор потока
 	HANDLE thread = CreateThread(NULL, 0, renderWorker, NULL, 0, &threadId);
+
+	DWORD threadId1;
+	HANDLE thread1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)test, NULL, 0, &threadId1);
 
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))

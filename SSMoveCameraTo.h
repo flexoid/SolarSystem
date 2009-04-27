@@ -2,6 +2,7 @@
 
 #include <irrlicht.h>
 #include <windows.h>
+#include <iostream>
 
 using namespace irr;
 using namespace core;
@@ -17,6 +18,6 @@ extern ISceneManager* smgr;
 extern bool IsActiveMoving;
 extern bool IsActiveRotating;
 
-void SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode, u32 TimeForWay);
+u32 SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode);
 void MovingCamera(void);
 vector3df CalcFinalPos(ISceneNode* node, f32 length);

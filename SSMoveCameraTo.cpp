@@ -18,13 +18,12 @@ bool CorrectPosFlag = false;
 SSCameraRotateAnimator* animRot;
 ISceneNodeAnimator* animMove;
 
-void SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode, u32 TimeForWay)
+u32 SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode)
 {
 	CamMutex = CreateMutex (NULL, FALSE, NULL);
 	WaitForSingleObject(CamMutex, INFINITE);
 	CamToMove->removeAnimators();
 	IsActiveMoving = false;
-	IsActiveRotating = false;
 	startAnimFlag = true;
 	checkFlag = true;
 	CorrectPosFlag = false;
@@ -34,9 +33,12 @@ void SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode, u32 Time
 	radius = attrib->getAttributeAsFloat("Radius");
 	::FinalPosition = CalcFinalPos(FinalNode, radius);
 	::FinalTarget = FinalNode->getPosition();
-	::TimeForWay = TimeForWay;
+	if (abs((FinalPosition - CamToMove->getPosition()).getLength())*10 < 10000)
+		::TimeForWay = abs((FinalPosition - CamToMove->getPosition()).getLength())*10;
+	else ::TimeForWay = 15000;
 	::FinalNode = FinalNode;
 	ReleaseMutex(CamMutex);
+	return ::TimeForWay;
 }
 
 vector3df CalcFinalPos(ISceneNode* node, f32 length)
@@ -48,8 +50,8 @@ vector3df CalcFinalPos(ISceneNode* node, f32 length)
 		f32 a = sqrtf(pos.X*pos.X + pos.Z*pos.Z);
 		f32 cosA = pos.X / a;
 		f32 sinA = pos.Z / a;
-		FinalPos.X = (a + length * 2) * cosA;
-		FinalPos.Z = (a + length * 2) * sinA;
+		FinalPos.X = (a + length * 4) * cosA;
+		FinalPos.Z = (a + length * 4) * sinA;
 		FinalPos.Y = pos.Y + length;
 	}
 	else
@@ -75,11 +77,10 @@ void MovingCamera(void)
 
 	else if(checkFlag)
 	{
-		if ((CamToMove->getPosition() - FinalPosition).getLengthSQ() < 1.0f)
+		if ((CamToMove->getPosition() - FinalPosition).getLengthSQ() < 0.1f)
 		{
 			CorrectPosFlag = true;
 			IsActiveMoving = true;
-			IsActiveRotating = true;
 			checkFlag = false;
 			CamToMove->removeAnimator(animMove);
 		}

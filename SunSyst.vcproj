@@ -249,7 +249,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Jupiter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Mars.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Mercury.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Neptune.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Pluto.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Saturn.cpp"
 				>
 			</File>
 			<File
@@ -258,6 +278,14 @@
 			</File>
 			<File
 				RelativePath=".\Sun.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Uranus.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Venus.cpp"
 				>
 			</File>
 		</Filter>

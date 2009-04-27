@@ -9,7 +9,7 @@ SSFlyEllipceAnimator::SSFlyEllipceAnimator(const core::vector3df& focus, f32 rot
 	this->peregelij = peregelij;
 	X_radius = (afelij + peregelij)/2;
 	Y_radius = sqrtf(X_radius*X_radius - ((afelij - peregelij)/2)*((afelij - peregelij)/2));
-	deg = 0;
+	deg = rand() % 720 - 360;
 	this->focus = focus;
 	this->IsActive = IsActive;
 	this->rotateDeg = rotateDeg;

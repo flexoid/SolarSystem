@@ -28,5 +28,14 @@ extern ISceneNode* sun;
 ISceneNode* AddSun();
 ISceneNode* AddEarth();
 ISceneNode* AddPluto();
+ISceneNode* AddMercury();
+ISceneNode* AddVenus();
+ISceneNode* AddMars();
+ISceneNode* AddJupiter();
+ISceneNode* AddSaturn();
+ISceneNode* AddUranus();
+ISceneNode* AddNeptune();
+
+const int kf = 3;
 
 #endif

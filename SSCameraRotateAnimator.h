@@ -22,4 +22,5 @@ private:
 	ISceneNode* TargetNode;
 	f32 radius;
 	ICameraSceneNode* camera;
+	int koeff;
 };
