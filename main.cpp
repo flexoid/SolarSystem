@@ -42,11 +42,12 @@ ICameraSceneNode *camera; //Камера
 
 void test(void)
 {
-	/*
 	while(1)
 	{
 		u32 time;
 		Sleep(3000);
+		time = SSMoveCameraTo(camera, sun);
+		Sleep(time + 2000);
 		time = SSMoveCameraTo(camera, earth);
 		Sleep(time + 2000);
 		time = SSMoveCameraTo(camera, mercury);
@@ -66,7 +67,6 @@ void test(void)
 		time = SSMoveCameraTo(camera, neptune);
 		Sleep(time + 2000);
 	}
-	*/
 }
 
 int main()
@@ -93,7 +93,7 @@ int main()
 	default: return 1;
 	}
 
-	device = createDevice(driverType, dimension2d<s32>(800, 600),
+	device = createDevice(driverType, dimension2d<s32>(1024, 768),
 		32, false, false, false, 0);
 	device->setWindowCaption(L"SunSyst   by FlexoID & Evilguc");
 
@@ -123,8 +123,8 @@ int main()
 		skyTexture, skyTexture, skyTexture);
 	//--------
 
-	//camera = smgr->addCameraSceneNode(0, vector3df(-300.0f, 0, -300.0f));
-	camera = smgr->addCameraSceneNodeFPS();
+	camera = smgr->addCameraSceneNode(0, vector3df(-700.0f, 500.0f, -700.0f));
+	//camera = smgr->addCameraSceneNodeFPS();
 	camera->setFarValue(999999.0f);
 
 	//-----Реализация рендеринга в отдельном потоке-----------
@@ -152,11 +152,10 @@ DWORD WINAPI renderWorker (void* arg)
 	{
 		WaitForSingleObject(mutex, INFINITE);
 
-		MovingCamera(); // Перемещение камеры
-
 		driver->beginScene(true, true, video::SColor(0, 0, 0, 0));
 		smgr->drawAll();
 		guienv->drawAll();
+		MovingCamera(); // Перемещение камеры
 		driver->endScene();
 
 		if (++frames==100)
@@ -169,7 +168,6 @@ DWORD WINAPI renderWorker (void* arg)
 			device->setWindowCaption(str.c_str());
 			frames=0;
 		}
-
 		ReleaseMutex(mutex);
 
 		device->yield();

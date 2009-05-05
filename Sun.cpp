@@ -10,8 +10,8 @@ ISceneNode* AddSun()
 		sun->setMaterialTexture(0, driver->getTexture(".\\data\\suncyl1.jpg"));
 		sun->addAnimator(animSunRot);
 	}
-	/*
-	IBillboardSceneNode* SunFlame = smgr->addBillboardSceneNode(0, dimension2df(400.0, 400.0), vector3df(0, 0, 0));
+	
+	IBillboardSceneNode* SunFlame = smgr->addBillboardSceneNode(0, dimension2df(380.0, 380.0), vector3df(0, 0, 0));
 	SunFlame->setMaterialFlag(EMF_LIGHTING, false);
 	SunFlame->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 
@@ -24,6 +24,6 @@ ISceneNode* AddSun()
 	ISceneNodeAnimator* SunFlameAnimator = smgr->createTextureAnimator(textures, 100);
 
 	SunFlame->addAnimator(SunFlameAnimator);
-	*/
+	
 	return sun;
 }

@@ -13,5 +13,10 @@ ISceneNode* AddSaturn()
 		saturn->addAnimator(animSaturnRot);
 		saturn->setRotation(vector3df(0.0f, 26.0f, 26.0f));
 	}
+	ISceneNode *saturnRings = smgr->addMeshSceneNode(smgr->getMesh(".\\data\\SaturnRings.obj"), saturn);
+	saturnRings->setMaterialFlag(EMF_LIGHTING, false);
+	saturnRings->setScale(vector3df(2.0f, 2.0f, 2.0f));
+	saturnRings->setMaterialTexture(0, driver->getTexture(".\\data\\SaturnRings.png"));
+	saturnRings->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 	return saturn;
 }
