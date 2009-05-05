@@ -5,7 +5,12 @@ bool CorrectPosFlag = false;
 extern IVideoDriver* driver;
 u32 x = 0;
 
-u32 SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode, SSGUISideInfoBar* bar1, SSGUISideNavigateBar* bar2)
+ICameraSceneNode* CamToMove;
+ISceneNode* FinalNode;
+SSGUISideInfoBar* bar1;
+SSGUISideNavigateBar* bar2;
+
+void t1()
 {
 	IAttributes *attrib = device->getFileSystem()->createEmptyAttributes();
 	FinalNode->serializeAttributes(attrib);
@@ -22,7 +27,17 @@ u32 SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode, SSGUISide
 	if (FinalNode->getPosition() != vector3df(0,0,0)) bar1->show();
 	else bar2->hide();
 	for (; x > 0; x--) Sleep(3);
+}
 
+DWORD threadId1;
+
+u32 SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode, SSGUISideInfoBar* bar1, SSGUISideNavigateBar* bar2)
+{
+	HANDLE thread1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)t1, NULL, 0, &threadId1);
+	::CamToMove = CamToMove;
+	::FinalNode = FinalNode;
+	::bar1 = bar1;
+	::bar2 = bar2;
 	return 3000;
 }
 
