@@ -19,14 +19,14 @@ void t1()
 	ISceneNodeAnimator* animRot = new SSCameraRotateAnimator(CamToMove, FinalNode, radius);
 
 	if (FinalNode->getPosition() != vector3df(0,0,0)) bar2->hide();
-	else bar2->show();
-	for (; x < 255; x++) Sleep(3);
+	else bar1->hide();
+	for (; x < 255; x++) Sleep(4);
 	CamToMove->removeAnimators();
 	CamToMove->addAnimator(animRot);
 	CamToMove->setPosition(FinalPosition);
 	if (FinalNode->getPosition() != vector3df(0,0,0)) bar1->show();
-	else bar2->hide();
-	for (; x > 0; x--) Sleep(3);
+	else bar2->show();
+	for (; x > 0; x--) Sleep(4);
 }
 
 DWORD threadId1;

@@ -3,6 +3,7 @@
 #include <irrlicht.h>
 #include <windows.h>
 #include <iostream>
+#include "SSGUI.h"
 
 using namespace irr;
 using namespace core;

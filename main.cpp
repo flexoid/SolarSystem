@@ -42,7 +42,7 @@ ICameraSceneNode *camera; //Камера
 
 void test(void)
 {
-	while(1)
+	/*while(1)
 	{
 		u32 time;
 		Sleep(3000);
@@ -66,7 +66,7 @@ void test(void)
 		Sleep(time + 2000);
 		time = SSMoveCameraTo(camera, neptune);
 		Sleep(time + 2000);
-	}
+	}*/
 }
 
 int main()

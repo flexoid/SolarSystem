@@ -191,13 +191,97 @@
 			<Filter
 				Name="GUI"
 				>
+				<File
+					RelativePath=".\SSGUI.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SSGUI.h"
+					>
+				</File>
 				<Filter
 					Name="Button"
 					>
+					<File
+						RelativePath=".\SSGUIButton.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUIButton.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Element Factory"
+					>
+					<File
+						RelativePath=".\SSGUIElementFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUIElementFactory.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Functions"
+					>
+					<File
+						RelativePath=".\SSGUIFunctions.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUIFunctions.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="MenuBar"
+					>
+					<File
+						RelativePath=".\SSGUIMenuBar.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUIMenuBar.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="ScrollBar"
 					>
+					<File
+						RelativePath=".\SSGUIScrollBar.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUIScrollBar.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="SideInfoBar"
+					>
+					<File
+						RelativePath=".\SSGUISideInfoBar.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUISideInfoBar.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="SideNavigateBar"
+					>
+					<File
+						RelativePath=".\SSGUISideNavigateBar.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUISideNavigateBar.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -231,14 +315,14 @@
 			<Filter
 				Name="SYS"
 				>
-				<Filter
-					Name="Delegates"
+				<File
+					RelativePath=".\os.cpp"
 					>
-					<Filter
-						Name="void"
-						>
-					</Filter>
-				</Filter>
+				</File>
+				<File
+					RelativePath=".\os.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
