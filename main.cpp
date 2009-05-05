@@ -4,6 +4,8 @@
 #include "SSEventReceiver.h"
 #include "SSMoveCameraTo.h"
 
+#include "SSGUI.h"
+
 #pragma comment(lib, "Irrlicht.lib")
 
 using namespace irr;
@@ -39,6 +41,36 @@ ISceneNode* uranus;
 ISceneNode* neptune;
 
 ICameraSceneNode *camera; //Камера
+
+void GlobalView()
+{
+	SSMoveCameraTo(camera, sun, SideInfoBar, SideNavigateBar);
+}
+
+void SideNavigateBarCallback(s32 groupID, s32 buttonID)
+{
+	if (groupID == 0 && buttonID == 0)
+		SSMoveCameraTo(camera, sun, SideInfoBar, SideNavigateBar);
+	if (groupID == 1 && buttonID == 0)
+		SSMoveCameraTo(camera, mercury, SideInfoBar, SideNavigateBar);
+	if (groupID == 1 && buttonID == 1)
+		SSMoveCameraTo(camera, venus, SideInfoBar, SideNavigateBar);
+	if (groupID == 1 && buttonID == 2)
+		SSMoveCameraTo(camera, earth, SideInfoBar, SideNavigateBar);
+	if (groupID == 1 && buttonID == 3)
+		SSMoveCameraTo(camera, mars, SideInfoBar, SideNavigateBar);
+	if (groupID == 1 && buttonID == 4)
+		SSMoveCameraTo(camera, jupiter, SideInfoBar, SideNavigateBar);
+	if (groupID == 1 && buttonID == 5)
+		SSMoveCameraTo(camera, saturn, SideInfoBar, SideNavigateBar);
+	if (groupID == 1 && buttonID == 6)
+		SSMoveCameraTo(camera, uranus, SideInfoBar, SideNavigateBar);
+	if (groupID == 1 && buttonID == 7)
+		SSMoveCameraTo(camera, neptune, SideInfoBar, SideNavigateBar);
+
+	if (groupID == 2 && buttonID == 0)
+		SSMoveCameraTo(camera, pluto, SideInfoBar, SideNavigateBar);
+}
 
 void test(void)
 {
@@ -126,6 +158,8 @@ int main()
 	camera = smgr->addCameraSceneNode(0, vector3df(-700.0f, 500.0f, -700.0f));
 	//camera = smgr->addCameraSceneNodeFPS();
 	camera->setFarValue(999999.0f);
+
+	InitializeGUI(guienv);
 
 	//-----Реализация рендеринга в отдельном потоке-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);

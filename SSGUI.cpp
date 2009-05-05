@@ -42,9 +42,27 @@ void InitializeGUI(IGUIEnvironment *environment)
 	Factory = new SSGUIElementFactory(environment);
 	environment->registerGUIElementFactory(Factory);
 
+
+	ZoomScrollBar = (SSGUIScrollBar*)Factory->addGUIElement("scrollbar", 0);
+	ZoomScrollBar->setVisualElements(
+		driver->getTexture(".\\data\\scroll\\SS\\ub_up.png"),
+		driver->getTexture(".\\data\\scroll\\SS\\ub_over.png"),
+		driver->getTexture(".\\data\\scroll\\SS\\ub_down.png"),
+		0,
+		driver->getTexture(".\\data\\scroll\\SS\\db_up.png"),
+		driver->getTexture(".\\data\\scroll\\SS\\db_over.png"),
+		driver->getTexture(".\\data\\scroll\\SS\\db_down.png"),
+		0,
+		driver->getTexture(".\\data\\scroll\\SS\\rule.png"),
+		0,
+		driver->getTexture(".\\data\\scroll\\SS\\sldr_normal.png"),
+		driver->getTexture(".\\data\\scroll\\SS\\sldr_over.png"),
+		0);
+	ZoomScrollBar->setPosition(position2d<s32>(30, 150));
+
 //							MenuBar
 //------------------------------------------------------------
-	MenuBar = (SSGUIMenuBar*)Factory->addGUIElement("MenuBar");
+	MenuBar = (SSGUIMenuBar*)Factory->addGUIElement("menubar");
 
 	ITexture *mb_background = driver->getTexture(".\\data\\GUI\\1024x768\\Source\\MenuBar\\background.png");
 	ITexture *mb_separator = driver->getTexture(".\\data\\GUI\\1024x768\\Source\\MenuBar\\separator.png");
@@ -82,7 +100,7 @@ void InitializeGUI(IGUIEnvironment *environment)
 
 //						SideNavigateBar
 //------------------------------------------------------------
-	SideNavigateBar = (SSGUISideNavigateBar*)Factory->addGUIElement("SideNavigateBar");
+	SideNavigateBar = (SSGUISideNavigateBar*)Factory->addGUIElement("sidenavigatebar");
 
 	ITexture *snb_background = driver->getTexture(".\\data\\GUI\\1024x768\\Source\\SideNavigateBar\\background.png");
 	ITexture *snb_b_normal = driver->getTexture(".\\data\\GUI\\1024x768\\Source\\SideNavigateBar\\Buttons\\b_normal.png");
@@ -200,7 +218,7 @@ void InitializeGUI(IGUIEnvironment *environment)
 
 //						SideInfoBar
 //------------------------------------------------------------
-	SideInfoBar = (SSGUISideInfoBar*)Factory->addGUIElement("SideInfoBar", 0);
+	SideInfoBar = (SSGUISideInfoBar*)Factory->addGUIElement("sideinfobar", 0);
 	SideInfoBar->setBackground(driver->getTexture(".\\data\\GUI\\SideInfoBar\\TitleBox\\background.png"),
 		driver->getTexture(".\\data\\GUI\\SideInfoBar\\ImageBox\\background.png"),
 		driver->getTexture(".\\data\\GUI\\SideInfoBar\\PHInfoBox\\background.png"),

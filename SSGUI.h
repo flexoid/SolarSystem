@@ -47,10 +47,6 @@ extern s32 ExitButtonID;
 
 
 void InitializeGUI(IGUIEnvironment *environment);
-void InitializeZoomScrollBar();
-void InitializeMenuBar();
-void InitializeSideNavigateBar();
-void InitializeSideInfoBar();
 
 void GlobalView();
 void SideNavigateBarCallback(s32 groupID, s32 buttonID);

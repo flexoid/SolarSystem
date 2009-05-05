@@ -1,9 +1,10 @@
 //											Обработчик событий
 
-#include <irrlicht.h>
-
 #ifndef __SS_EVENT_RECEIVER_H_INCLUDED__
 #define __SS_EVENT_RECEIVER_H_INCLUDED__
+
+#include <irrlicht.h>
+#include "SSGUI.h"
 
 using namespace irr;
 using namespace core;
@@ -25,15 +26,21 @@ public:
 		if (event.EventType == EET_GUI_EVENT)
 		{
 			// Обработка пользовательских сообщений
+			IGUIElement *caller = event.GUIEvent.Caller;
 			s32 id = event.GUIEvent.Caller->getID();
 			IGUIEnvironment* env = device->getGUIEnvironment();
 			
-			/*switch(event.GUIEvent.EventType)
+			switch(event.GUIEvent.EventType)
 			{
-				//id элемента управления
+			case EGET_SCROLL_BAR_CHANGED:
+				{
+					if (caller == ZoomScrollBar)
+					{
+					}
+				}
 			default:
 				break;
-			}*/
+			}
 		}
 		return false;
 	}
