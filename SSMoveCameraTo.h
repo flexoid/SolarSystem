@@ -19,6 +19,7 @@ extern ISceneManager* smgr;
 extern bool IsActiveMoving;
 extern bool IsActiveRotating;
 
-u32 SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode, SSGUISideInfoBar* bar1, SSGUISideNavigateBar* bar2);
+void SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode);
 void MovingCamera(void);
 vector3df CalcFinalPos(ISceneNode* node, f32 length);
+void SSCameraStartPos(ICameraSceneNode* CamToMove);

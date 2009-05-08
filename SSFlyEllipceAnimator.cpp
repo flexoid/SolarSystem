@@ -1,15 +1,14 @@
 ﻿#include "SSFlyEllipceAnimator.h"
 #include <iostream>
 
-SSFlyEllipceAnimator::SSFlyEllipceAnimator(const core::vector3df& focus, f32 rotateDeg, f32 orbDeg, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive)
+SSFlyEllipceAnimator::SSFlyEllipceAnimator(const core::vector3df& focus, f32 rotateDeg, f32 orbDeg, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, f32* koeffOfDist, bool *IsActive)
 {
 	this->speed = speed;
 	this->koeffOfSpeed = koeffOfSpeed;
 	this->afelij = afelij;
 	this->peregelij = peregelij;
-	X_radius = (afelij + peregelij)/2;
-	Y_radius = sqrtf(X_radius*X_radius - ((afelij - peregelij)/2)*((afelij - peregelij)/2));
-	deg = rand() % 720 - 360;
+	this->koeffOfDist = koeffOfDist;
+	deg = (f32)(rand() % 720 - 360);
 	this->focus = focus;
 	this->IsActive = IsActive;
 	this->rotateDeg = rotateDeg;
@@ -24,12 +23,15 @@ void SSFlyEllipceAnimator::animateNode(ISceneNode* node, u32 timeMs)
 	{
 		if (*IsActive)
 		{
+			X_radius = (*koeffOfDist * afelij + *koeffOfDist * peregelij)/2;
+			Y_radius = sqrtf(X_radius*X_radius - ((*koeffOfDist * afelij - *koeffOfDist * peregelij)/2)*((*koeffOfDist * afelij - *koeffOfDist * peregelij)/2));
+
 			u32 diffTime = timeMs - StartTime;
 			if (diffTime != 0)
 			{
-				center.X = focus.X + ((afelij - peregelij)/2);
+				center.X = focus.X + ((*koeffOfDist * afelij - *koeffOfDist * peregelij)/2);
 				if (deg >= 360.0f && deg <= -360.0f) deg = 0;
-				deg += 1.0f / 1000.0f * diffTime * speed * *koeffOfSpeed;
+				deg += 1.0f / 1000.0f * diffTime * speed * *koeffOfSpeed * -1;
 				vector3df newpos = node->getPosition();
 				newpos.X = center.X + X_radius * cosf(deg * DEGTORAD);
 				newpos.Z = center.Z + Y_radius * sinf(deg * DEGTORAD);

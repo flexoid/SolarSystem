@@ -1,3 +1,5 @@
+#pragma once;
+
 #include <irrlicht.h>
 #include "SSFlyEllipceAnimator.h"
 #include "SSRotationAnimator.h"
@@ -16,6 +18,7 @@ using namespace gui;
 extern bool IsActiveMoving;
 extern bool IsActiveRotating;
 extern f32 koeffSpeed;
+extern f32 koeffOfDist;
 
 //√лобальные экземпл€ры класса
 extern IVideoDriver* driver;
@@ -35,7 +38,5 @@ ISceneNode* AddJupiter();
 ISceneNode* AddSaturn();
 ISceneNode* AddUranus();
 ISceneNode* AddNeptune();
-
-const int kf = 3;
 
 #endif

@@ -1,6 +1,7 @@
 #include "SSCameraRotateAnimator.h"
 #include "SSMoveCameraTo.h"
 
+s32 koeffOfScale;
 extern bool CorrectPosFlag;
 
 SSCameraRotateAnimator::SSCameraRotateAnimator(ICameraSceneNode* camera, ISceneNode* TargetNode, f32 length)
@@ -16,7 +17,7 @@ SSCameraRotateAnimator::~SSCameraRotateAnimator(void)
 
 void SSCameraRotateAnimator::animateNode(ISceneNode* node, u32 timeMs)
 {
-	camera->setPosition(CalcFinalPos(TargetNode, length));
+	camera->setPosition(TargetNode->getPosition().getInterpolated(CalcFinalPos(TargetNode, length), (f32)koeffOfScale / 10000.0f));
 	camera->setTarget(TargetNode->getPosition());
 }
 

@@ -3,7 +3,7 @@
 SSRotationAnimator::SSRotationAnimator(const core::vector3df& rotation, f32* koeffOfSpeed, bool *IsActive)
 {
 	this->rotation = rotation;
-	this->StartTime = 0.0f;
+	this->StartTime = 0;
 	this->IsActive = IsActive;
 	this->koeffOfSpeed = koeffOfSpeed;
 }
@@ -24,7 +24,7 @@ void SSRotationAnimator::animateNode(ISceneNode* node, u32 timeMs)
 			if (diffTime != 0)
 			{
 				core::vector3df NewRotation = node->getRotation(); 
-				NewRotation += rotation* ((diffTime)/10.0f) * *koeffOfSpeed; 
+				NewRotation += rotation* ((diffTime)/10.0f) * *koeffOfSpeed * 0.2; 
 				node->setRotation(NewRotation); 
 				StartTime=timeMs; 
 			}

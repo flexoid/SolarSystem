@@ -1,6 +1,5 @@
 #include "SSMoveCameraTo.h"
 #include "SSCameraRotateAnimator.h"
-
 #include "SSGUI.h"
 
 bool CorrectPosFlag = false;
@@ -9,8 +8,7 @@ u32 x = 0;
 
 ICameraSceneNode* CamToMove;
 ISceneNode* FinalNode;
-SSGUISideInfoBar* bar1;
-SSGUISideNavigateBar* bar2;
+extern ICameraSceneNode* camera;
 
 void t1()
 {
@@ -20,28 +18,60 @@ void t1()
 	vector3df FinalPosition = CalcFinalPos(FinalNode, radius);
 	ISceneNodeAnimator* animRot = new SSCameraRotateAnimator(CamToMove, FinalNode, radius);
 
-	if (FinalNode->getPosition() != vector3df(0,0,0)) bar2->hide();
-	else bar1->hide();
-	for (; x < 255; x++) Sleep(1);
+	SideNavigateBar->hide();
+	Sleep(300);
+	for (x = 0; x < 255; x++) Sleep(4);
+	ZoomScrollBar->setVisible(true);
+	DistanceScrollBar->setVisible(false);
 	CamToMove->removeAnimators();
 	CamToMove->addAnimator(animRot);
 	CamToMove->setPosition(FinalPosition);
 	FillSideInfoBar(currentPlanetID);
-	if (FinalNode->getPosition() != vector3df(0,0,0)) bar1->show();
-	else bar2->show();
-	for (; x > 0; x--) Sleep(1);
+	for (x = 255; x > 0; x--) Sleep(4);
+	SideInfoBar->show();
 }
 
+void t2()
+{
+	SideInfoBar->hide();
+	Sleep(1000);
+	for (x = 0; x < 255; x++) Sleep(4);
+	ZoomScrollBar->setVisible(false);
+	DistanceScrollBar->setVisible(true);
+	ZoomScrollBar->setPos(ZoomScrollBar->getMax() / 2);
+	camera->removeAnimators();
+	camera->setPosition(vector3df(-1000.0f, 500.0f, -1000.0f));
+	camera->setTarget(vector3df(0,0,0));
+	for (x = 255; x > 0; x--) Sleep(4);
+	SideNavigateBar->show();
+}
+
+HANDLE thread1;
 DWORD threadId1;
 
-u32 SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode, SSGUISideInfoBar* bar1, SSGUISideNavigateBar* bar2)
+void SSMoveCameraTo(ICameraSceneNode* CamToMove, ISceneNode* FinalNode)
 {
-	HANDLE thread1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)t1, NULL, 0, &threadId1);
 	::CamToMove = CamToMove;
 	::FinalNode = FinalNode;
-	::bar1 = bar1;
-	::bar2 = bar2;
-	return 3000;
+	if (thread1)
+	{
+		GetExitCodeThread(thread1, &threadId1);
+		TerminateThread(thread1, threadId1);
+		thread1 = 0;
+	}
+	thread1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)t1, NULL, 0, &threadId1);
+	return;
+}
+
+void SSCameraStartPos(ICameraSceneNode* CamToMove)
+{
+	if (thread1)
+	{
+		GetExitCodeThread(thread1, &threadId1);
+		TerminateThread(thread1, threadId1);
+		thread1 = 0;
+	}
+	thread1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)t2, NULL, 0, &threadId1);
 }
 
 vector3df CalcFinalPos(ISceneNode* node, f32 length)
@@ -53,15 +83,15 @@ vector3df CalcFinalPos(ISceneNode* node, f32 length)
 		f32 a = sqrtf(pos.X*pos.X + pos.Z*pos.Z);
 		f32 cosA = pos.X / a;
 		f32 sinA = pos.Z / a;
-		FinalPos.X = (a + length * 4) * cosA;
-		FinalPos.Z = (a + length * 4) * sinA;
-		FinalPos.Y = pos.Y + length;
+		FinalPos.X = (a + length * 8) * cosA;
+		FinalPos.Z = (a + length * 8) * sinA;
+		FinalPos.Y = pos.Y + length * 2;
 	}
 	else
 	{
-		FinalPos.X = length * 4;
-		FinalPos.Z = length * 4;
-		FinalPos.Y = length;
+		FinalPos.X = length * 8;
+		FinalPos.Z = length * 8;
+		FinalPos.Y = length * 2;
 	}
 	return FinalPos;
 }

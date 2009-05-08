@@ -18,7 +18,7 @@ extern IVideoDriver* driver;
 class SSFlyEllipceAnimator : public ISceneNodeAnimator
 {
 public:
-	SSFlyEllipceAnimator::SSFlyEllipceAnimator(const core::vector3df& focus, f32 rotateDeg, f32 orbDeg, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, bool *IsActive);
+	SSFlyEllipceAnimator::SSFlyEllipceAnimator(const core::vector3df& focus, f32 rotateDeg, f32 orbDeg, f32 speed, f32* koeffOfSpeed, f32 afelij, f32 peregelij, f32* koeffOfDist, bool *IsActive);
 	~SSFlyEllipceAnimator(void);
 	virtual void animateNode(ISceneNode* node, u32 timeMs);
 	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const;
@@ -38,6 +38,7 @@ private:
 	core::vector3df center;
 	bool *IsActive;
 	f32 afelij, peregelij;
+	f32 *koeffOfDist;
 };
 
 #endif

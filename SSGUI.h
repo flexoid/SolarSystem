@@ -14,6 +14,9 @@
 extern SSGUIElementFactory *Factory;
 
 extern SSGUIScrollBar *ZoomScrollBar;
+extern SSGUIScrollBar *DistanceScrollBar;
+extern SSGUIScrollBar *SpeedScrollBar;
+
 extern SSGUIMenuBar *MenuBar;
 extern SSGUISideNavigateBar *SideNavigateBar;
 extern SSGUISideInfoBar *SideInfoBar;
@@ -61,9 +64,14 @@ extern s32 MinimizeButtonID;
 extern s32 ExitButtonID;
 //-----------------------------------------------------------
 
+extern s32 koeffOfScale;
+extern f32 koeffOfDist;
+
 
 void InitializeGUI(IGUIEnvironment *environment);
 void InitializeZoomScrollBar();
+void InitializeDistanceScrollBar();
+void InitializeSpeedScrollBar();
 void InitializeMenuBar();
 void InitializeSideNavigateBar();
 void InitializeSideInfoBar();

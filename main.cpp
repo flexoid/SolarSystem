@@ -6,6 +6,7 @@
 
 #include "SSGUI.h"
 
+#include "SSSplashScreen.h"
 #pragma comment(lib, "Irrlicht.lib")
 
 using namespace irr;
@@ -26,7 +27,9 @@ IGUIEnvironment* guienv;
 //Параметры анимации
 bool IsActiveMoving = true;
 bool IsActiveRotating = true;
-f32 koeffSpeed = 0.3f;
+f32 koeffSpeed = 0.15f;
+f32 koeffOfDist = 4.0f;
+
 
 //Планеты
 ISceneNode* sun;
@@ -46,7 +49,7 @@ ICameraSceneNode *camera; //Камера
 
 void GlobalView()
 {
-	SSMoveCameraTo(camera, sun, SideInfoBar, SideNavigateBar);
+	SSCameraStartPos(camera);
 }
 
 void PrevPlanet()
@@ -54,7 +57,7 @@ void PrevPlanet()
 	currentPlanetID--;
 	if (currentPlanetID < 0)
 		currentPlanetID = 9;
-	SSMoveCameraTo(camera, Planets[currentPlanetID], SideInfoBar, SideNavigateBar);
+	SSMoveCameraTo(camera, Planets[currentPlanetID]);
 }
 
 void NextPlanet()
@@ -62,7 +65,7 @@ void NextPlanet()
 	currentPlanetID++;
 	if (currentPlanetID > 9)
 		currentPlanetID = 0;
-	SSMoveCameraTo(camera, Planets[currentPlanetID], SideInfoBar, SideNavigateBar);
+	SSMoveCameraTo(camera, Planets[currentPlanetID]);
 }
 
 void Minimize()
@@ -81,83 +84,54 @@ void SideNavigateBarCallback(s32 groupID, s32 buttonID)
 	if (groupID == 0 && buttonID == 0)
 	{
 		currentPlanetID = 0;
-		SSMoveCameraTo(camera, sun, SideInfoBar, SideNavigateBar);
+		SSMoveCameraTo(camera, sun);
 	}
 	if (groupID == 1 && buttonID == 0)
 	{
 		currentPlanetID = 1;
-		SSMoveCameraTo(camera, mercury, SideInfoBar, SideNavigateBar);
+		SSMoveCameraTo(camera, mercury);
 	}
 	if (groupID == 1 && buttonID == 1)
 	{
 		currentPlanetID = 2;
-		SSMoveCameraTo(camera, venus, SideInfoBar, SideNavigateBar);
+		SSMoveCameraTo(camera, venus);
 	}
 	if (groupID == 1 && buttonID == 2)
 	{
 		currentPlanetID = 3;
-		SSMoveCameraTo(camera, earth, SideInfoBar, SideNavigateBar);
+		SSMoveCameraTo(camera, earth);
 	}
 	if (groupID == 1 && buttonID == 3)
 	{
 		currentPlanetID = 4;
-		SSMoveCameraTo(camera, mars, SideInfoBar, SideNavigateBar);
+		SSMoveCameraTo(camera, mars);
 	}
 	if (groupID == 1 && buttonID == 4)
 	{
 		currentPlanetID = 5;
-		SSMoveCameraTo(camera, jupiter, SideInfoBar, SideNavigateBar);
+		SSMoveCameraTo(camera, jupiter);
 	}
 	if (groupID == 1 && buttonID == 5)
 	{
 		currentPlanetID = 6;
-		SSMoveCameraTo(camera, saturn, SideInfoBar, SideNavigateBar);
+		SSMoveCameraTo(camera, saturn);
 	}
 	if (groupID == 1 && buttonID == 6)
 	{
 		currentPlanetID = 7;
-		SSMoveCameraTo(camera, uranus, SideInfoBar, SideNavigateBar);
+		SSMoveCameraTo(camera, uranus);
 	}
 	if (groupID == 1 && buttonID == 7)
 	{
 		currentPlanetID = 8;
-		SSMoveCameraTo(camera, neptune, SideInfoBar, SideNavigateBar);
+		SSMoveCameraTo(camera, neptune);
 	}
 
 	if (groupID == 2 && buttonID == 0)
 	{
 		currentPlanetID = 9;
-		SSMoveCameraTo(camera, pluto, SideInfoBar, SideNavigateBar);
+		SSMoveCameraTo(camera, pluto);
 	}
-}
-
-void test(void)
-{
-	/*while(1)
-	{
-		u32 time;
-		Sleep(3000);
-		time = SSMoveCameraTo(camera, sun);
-		Sleep(time + 2000);
-		time = SSMoveCameraTo(camera, earth);
-		Sleep(time + 2000);
-		time = SSMoveCameraTo(camera, mercury);
-		Sleep(time + 2000);
-		time = SSMoveCameraTo(camera, pluto);
-		Sleep(time + 2000);
-		time = SSMoveCameraTo(camera, venus);
-		Sleep(time + 2000);
-		time = SSMoveCameraTo(camera, mars);
-		Sleep(time + 2000);
-		time = SSMoveCameraTo(camera, jupiter);
-		Sleep(time + 2000);
-		time = SSMoveCameraTo(camera, saturn);
-		Sleep(time + 2000);
-		time = SSMoveCameraTo(camera, uranus);
-		Sleep(time + 2000);
-		time = SSMoveCameraTo(camera, neptune);
-		Sleep(time + 2000);
-	}*/
 }
 
 int main()
@@ -187,6 +161,8 @@ int main()
 	device = createDevice(driverType, dimension2d<s32>(1024, 768),
 		32, false, false, false, 0);
 	device->setWindowCaption(L"SunSyst   by FlexoID & Evilguc");
+
+	ShowSplash(L"./data/Images/SplashScreen/SplashScreen.bmp");
 
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
@@ -219,7 +195,7 @@ int main()
 	//--------
 
 	//----Небо
-	ITexture *skyTexture = driver->getTexture(".\\data\\hipp8.jpg");
+	ITexture *skyTexture = driver->getTexture("./data/Textures/Hi/Sky/Sky.jpg");
 	smgr->addSkyBoxSceneNode(skyTexture, skyTexture, skyTexture, 
 		skyTexture, skyTexture, skyTexture);
 	//--------
@@ -230,16 +206,15 @@ int main()
 
 	InitializeGUI(guienv);
 
-
-
 	//-----Реализация рендеринга в отдельном потоке-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);
 
 	DWORD threadId; // Идентификатор потока
 	HANDLE thread = CreateThread(NULL, 0, renderWorker, NULL, 0, &threadId);
 
-	DWORD threadId1;
-	HANDLE thread1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)test, NULL, 0, &threadId1);
+	koeffOfDist = (f32)(DistanceScrollBar->getPos() / 1000.0f + 1.4f);
+
+	HideSplash();
 
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))

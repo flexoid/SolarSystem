@@ -18,6 +18,12 @@ extern IVideoDriver* driver;
 extern ISceneManager* smgr;
 extern IGUIEnvironment* guienv;
 
+extern f32 koeffOfDist;
+extern ICameraSceneNode* camera;
+extern s32 koeffOfScale;
+extern f32 koeffSpeed;
+
+
 class SSEventReceiver : public IEventReceiver
 {
 public:
@@ -36,6 +42,26 @@ public:
 				{
 					if (caller == ZoomScrollBar)
 					{
+						koeffOfScale = ZoomScrollBar->getPos();
+						if (abs(ZoomScrollBar->getMax() / 2 - ZoomScrollBar->getPos()) <= 100)
+							ZoomScrollBar->setPos(ZoomScrollBar->getMax() / 2);
+					}
+
+					else if (caller == DistanceScrollBar)
+					{
+						koeffOfDist = (f32)(DistanceScrollBar->getPos() / 1000.0f + 1.4f);
+						if (abs(DistanceScrollBar->getMax() / 2 - DistanceScrollBar->getPos()) <= 100)
+							DistanceScrollBar->setPos(DistanceScrollBar->getMax() / 2);
+					}
+					else if (caller == SpeedScrollBar)
+					{
+						if (SpeedScrollBar->getPos() < 15000)
+						{
+							koeffSpeed = (f32)(0.15f * 
+								(1.0f + (SpeedScrollBar->getPos() / 1000.0f) / (5.0f - 4.0f / 15 * (SpeedScrollBar->getPos() / 1000.0f)))); 
+						}
+						else
+							koeffSpeed = (f32)(0.15f * (1.0f + SpeedScrollBar->getPos() / 1000.0f)); 
 					}
 				}
 			default:
