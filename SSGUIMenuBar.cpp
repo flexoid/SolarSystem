@@ -6,14 +6,14 @@ SSGUIMenuBar::SSGUIMenuBar(ITexture *image, IGUIEnvironment *environment, IGUIEl
 			:IGUIElement(EGUIET_ELEMENT, environment, parent, id, rect<s32>(0,0,0,0)),
 			Interval(1), Horizontal(true), HIndention(1,1), VIndention(1,1), HCenter(false), VCenter(false)
 {
-	Image = image;
+	Background = image;
 
 	update();
 }
 
 SSGUIMenuBar::~SSGUIMenuBar()
 {
-	if (Image) Image->drop();
+	if (Background) Background->drop();
 	if (Separator) Separator->drop();
 	if (Buttons.size() > 0)
 	{
@@ -26,11 +26,11 @@ SSGUIMenuBar::~SSGUIMenuBar()
 
 void SSGUIMenuBar::update()
 {
-	if (Image)
+	if (Background)
 	{
 		position2d<s32> pos = IGUIElement::getRelativePosition().UpperLeftCorner;
 
-		IGUIElement::setRelativePosition(rect<s32>(pos, pos + Image->getOriginalSize()));
+		IGUIElement::setRelativePosition(rect<s32>(pos, pos + Background->getOriginalSize()));
 	}
 }
 
@@ -40,11 +40,11 @@ void SSGUIMenuBar::setOrientaiton(bool horizontal)
 	rebuild();
 }
 
-void SSGUIMenuBar::setImage(ITexture *image)
+void SSGUIMenuBar::setBackground(ITexture *image)
 {
 	if (image)
 	{
-		Image = image;
+		Background = image;
 		update();
 		rebuild();
 	}
@@ -424,9 +424,9 @@ s32 SSGUIMenuBar::getFreeButtonID()
 void SSGUIMenuBar::draw()
 {
 	IVideoDriver *driver = Environment->getVideoDriver();
-	if (Image)
+	if (Background)
 	{
-		driver->draw2DImage(Image, AbsoluteRect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), Image->getOriginalSize()),
+		driver->draw2DImage(Background, AbsoluteRect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), Background->getOriginalSize()),
 			0, SColor(255,255,255,255), true);
 
 		if (Horizontal)
@@ -500,4 +500,18 @@ bool SSGUIMenuBar::OnEvent(const SEvent &event)
 		return true;
 	}
 	return IGUIElement::OnEvent(event);
+}
+
+void SSGUIMenuBar::deserializeAttributes(IAttributes *in, SAttributeReadWriteOptions *options)
+{
+	IVideoDriver *driver = Environment->getVideoDriver();
+
+	Background = driver->getTexture(in->getAttributeAsString("background").c_str());
+	Separator = driver->getTexture(in->getAttributeAsString("separator").c_str());
+	HIndention = Indention(in->getAttributeAsInt("leftindention"), in->getAttributeAsInt("rightindention"));
+	VIndention = Indention(in->getAttributeAsInt("topindention"), in->getAttributeAsInt("bottomindention"));
+	HCenter = in->getAttributeAsBool("hcenter");
+	VCenter = in->getAttributeAsBool("vcenter");
+
+	rebuild();
 }

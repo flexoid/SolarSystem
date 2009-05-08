@@ -4,6 +4,7 @@
 #include <irrlicht.h>
 #include <windows.h>
 
+#include "SSGUIButton.h"
 #include "SSGUIFunctions.h"
 
 using namespace irr;
@@ -24,13 +25,14 @@ public:
 	virtual void draw();
 	virtual bool OnEvent(const SEvent &event);
 	virtual void OnPostRender(u32 timeMs);
+	virtual void deserializeAttributes(IAttributes *in, SAttributeReadWriteOptions *options = 0);
 
-	void setImage(ITexture *image);
+	void setBackground(ITexture *image);
 
 	void setHIndention(s32 indention);
 	void setVIndention(s32 indention);
 
-	void setLineBetweenGroupColor(SColor color);
+	void setLineBetweenGroupsColor(SColor color);
 
 	void setCallback(callback cb);
 
@@ -46,13 +48,21 @@ public:
 	void setCaptionCenterAlignment(bool center);
 
 	s32 createGroup(const wchar_t *caption);
-	void setGroupCaption(s32 groupID, const wchar_t *caption, IGUIFont *font = 0, SColor color = SColor(255,255,255,255), bool center = false);
+	void setGroupCaption(s32 groupID, const wchar_t *caption);
 	s32 addButtonToGroup(s32 groupID, IGUIButton *button, SSGUI_ALIGNMENT alignment = SSGUIA_UPPERLEFT);
 	void setGroupButtonAlignment(s32 groupID, s32 buttonID, SSGUI_ALIGNMENT alignment);
 	bool dropButtonFromGroup(s32 groupID, s32 buttonID);
-	void setIntervalBetweenGroups(s32 interval);
-	void setIntervalAfterGroupCaption(s32 interval);
-	void setIntervalBetweenGroupButtons(s32 interval);
+	void setGroupsBoxCaptionFont(IGUIFont *font);
+	void setGroupsBoxCaptionColor(SColor color);
+	void setGroupsBoxCaptionHIndention(s32 indention);
+	void setGroupsBoxCaptionHIndention(s32 leftIndention, s32 rightIndention);
+	void setGroupsBoxCaptionVIndention(s32 indention);
+	void setGroupsBoxCaptionCenter(bool center);
+	void setGroupsBoxIntervalBetweenGroups(s32 interval);
+	void setGroupsBoxIntervalAfterGroupCaption(s32 interval);
+	void setGroupsBoxIntervalBetweenGroupButtons(s32 interval);
+
+	void setSSButtonElementsForAll(ITexture *b_up, ITexture *b_mouse_over, ITexture *b_down, ITexture *b_inactive, IGUIFont *font, SColor color);
 
 	void show();
 	void showX();
@@ -74,15 +84,38 @@ private:
 	struct SideNavigateBarGroupButton;
 	struct SideNavigateBarContainer;
 
+	struct SideNavigateBarCaption
+	{
+		const wchar_t *Caption;
+		rect<s32> Rect;
+		bool Visible;
+	};
+
 	struct SideNavigateBarGroup
 	{
-		SideBarCaption Caption;
+		SideNavigateBarCaption Caption;
 
 		array<SideNavigateBarGroupButton> Buttons;
 
 		IGUIElement *Container;
 
 		s32 ID;
+	};
+
+	struct SideNavigateBarGroupsBox
+	{
+		array<SideNavigateBarGroup> Groups;
+
+		IGUIFont *CaptionFont;
+		SColor CaptionColor;
+
+		Indention CaptionHIndention;
+		s32 CaptionVIndention;
+		bool CaptionCenter;
+
+		s32 IntervalAfterGroupCaption;
+		s32 IntervalBetweenGroups;
+		s32 IntervalBetweenGroupButtons;
 	};
 
 	struct SideNavigateBarGroupButton
@@ -104,7 +137,7 @@ private:
 	s32 VIndention;
 	s32 Displacement;
 
-	ITexture *Image;
+	ITexture *Background;
 
 	SideBarCaption Caption;
 
@@ -112,10 +145,7 @@ private:
 
 	SideNavigateBarContainer Container;
 
-	array<SideNavigateBarGroup> Groups;
-	s32 IntervalBetweenGroups;
-	s32 IntervalAfterGroupCaption;
-	s32 IntervalBetweenGroupButtons;
+	SideNavigateBarGroupsBox GroupsBox;
 
 	SColor LineColor;
 

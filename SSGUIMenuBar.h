@@ -23,9 +23,10 @@ public:
 
 	virtual void draw();
 	virtual bool OnEvent(const SEvent &event);
+	virtual void deserializeAttributes(IAttributes *in, SAttributeReadWriteOptions *options = 0);
 	
 	void setOrientaiton(bool horizontal);
-	void setImage(ITexture *image);
+	void setBackground(ITexture *image);
 	void setSeparator(ITexture *separator);
 	void setHIndention(s32 indention);
 	void setHIndention(s32 LeftIndention, s32 RightIndention);
@@ -62,7 +63,7 @@ private:
 	s32 getFreeButtonID();
 //-------------------------------------
 
-	ITexture *Image;
+	ITexture *Background;
 	ITexture *Separator;
 	bool Horizontal;
 	s32 Interval;

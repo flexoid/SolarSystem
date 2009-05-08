@@ -5,7 +5,7 @@
 SSGUISideNavigateBar::SSGUISideNavigateBar(ITexture *image, IGUIEnvironment *environment, IGUIElement *parent, s32 id)
 					:IGUIElement(EGUIET_ELEMENT, environment, parent, id, rect<s32>(0,0,0,0))
 {
-	Image = image;
+	Background = image;
 
 	Displacement = 0;
 
@@ -19,6 +19,15 @@ SSGUISideNavigateBar::SSGUISideNavigateBar(ITexture *image, IGUIEnvironment *env
 	Caption.Rect = rect<s32>(0,0,0,0);
 	Caption.Center = false;
 	Caption.Visible = true;
+
+	GroupsBox.CaptionCenter = false;
+	GroupsBox.CaptionColor = SColor(255,255,255,255);
+	GroupsBox.CaptionFont = Environment->getSkin()->getFont();
+	GroupsBox.CaptionHIndention = Indention(1,1);
+	GroupsBox.CaptionVIndention = 1;
+	GroupsBox.IntervalAfterGroupCaption = 1;
+	GroupsBox.IntervalBetweenGroupButtons = 1;
+	GroupsBox.IntervalBetweenGroups = 1;
 
 	LineColor = SColor(255,255,255,255);
 
@@ -34,11 +43,11 @@ SSGUISideNavigateBar::~SSGUISideNavigateBar()
 {
 }
 
-void SSGUISideNavigateBar::setImage(ITexture *image)
+void SSGUISideNavigateBar::setBackground(ITexture *image)
 {
 	if (image)
 	{
-		Image = image;
+		Background = image;
 		rebuild();
 	}
 }
@@ -119,7 +128,7 @@ void SSGUISideNavigateBar::setContainerVIndention(s32 UpIndention, s32 DownInden
 		rebuild();
 }
 
-void SSGUISideNavigateBar::setLineBetweenGroupColor(SColor color)
+void SSGUISideNavigateBar::setLineBetweenGroupsColor(SColor color)
 {
 	LineColor = color;
 }
@@ -130,37 +139,26 @@ s32 SSGUISideNavigateBar::createGroup(const wchar_t *caption)
 	SideNavigateBarGroup group;
 
 	group.Caption.Caption = caption;
-	group.Caption.Center = false;
-	group.Caption.Color = SColor(255,255,255,255);
-	group.Caption.Font = Environment->getSkin()->getFont();
-	group.Caption.HIndention = Indention(1,1);
 	group.Caption.Rect = rect<s32>(0,0,0,0);
-	group.Caption.VIndention = 1;
 	group.Caption.Visible = true;
 
 	group.Container = 0;
 	group.ID = ID;
 
-	Groups.push_back(group);
+	GroupsBox.Groups.push_back(group);
 
 	rebuild();
 
 	return ID;
 }
 
-void SSGUISideNavigateBar::setGroupCaption(s32 groupID, const wchar_t *caption, IGUIFont *font, SColor color, bool center)
+void SSGUISideNavigateBar::setGroupCaption(s32 groupID, const wchar_t *caption)
 {
-	if (groupID < (s32)Groups.size())
+	if (groupID < (s32)GroupsBox.Groups.size())
 	{
 		s32 index = getGroupIndex(groupID);
 
-		Groups[index].Caption.Caption = caption;
-		Groups[index].Caption.Center = center;
-		Groups[index].Caption.Color = color;
-		if (font)
-			Groups[index].Caption.Font = font;
-		else
-			Groups[index].Caption.Font = Environment->getSkin()->getFont();
+		GroupsBox.Groups[index].Caption.Caption = caption;
 
 		rebuild();
 	}
@@ -179,7 +177,7 @@ s32 SSGUISideNavigateBar::addButtonToGroup(s32 groupID, IGUIButton *button, SSGU
 			Button.Alignment = alignment;
 			Button.ID = ID;
 
-			Groups[groupIndex].Buttons.push_back(Button);
+			GroupsBox.Groups[groupIndex].Buttons.push_back(Button);
 
 			rebuild();
 
@@ -197,9 +195,9 @@ void SSGUISideNavigateBar::setGroupButtonAlignment(s32 groupID, s32 buttonID, SS
 		s32 buttonIndex = getButtonIndex(groupID, buttonID);
 		if (buttonID >=0)
 		{
-			SSGUI_ALIGNMENT oldAlignment = Groups[groupIndex].Buttons[buttonIndex].Alignment;
-			Groups[groupIndex].Buttons[buttonIndex].Alignment = alignment;
-			if (Groups[groupIndex].Buttons[buttonIndex].Alignment != oldAlignment)
+			SSGUI_ALIGNMENT oldAlignment = GroupsBox.Groups[groupIndex].Buttons[buttonIndex].Alignment;
+			GroupsBox.Groups[groupIndex].Buttons[buttonIndex].Alignment = alignment;
+			if (GroupsBox.Groups[groupIndex].Buttons[buttonIndex].Alignment != oldAlignment)
 				rebuild();
 		}
 	}
@@ -213,10 +211,10 @@ bool SSGUISideNavigateBar::dropButtonFromGroup(s32 groupID, s32 buttonID)
 		s32 buttonIndex = getButtonIndex(groupID, buttonID);
 		if (buttonIndex >= 0)
 		{
-			if (Groups[groupIndex].Container->isMyChild(Groups[groupIndex].Buttons[buttonIndex].Button))
-				Groups[groupIndex].Container->removeChild(Groups[groupIndex].Buttons[buttonIndex].Button);
+			if (GroupsBox.Groups[groupIndex].Container->isMyChild(GroupsBox.Groups[groupIndex].Buttons[buttonIndex].Button))
+				GroupsBox.Groups[groupIndex].Container->removeChild(GroupsBox.Groups[groupIndex].Buttons[buttonIndex].Button);
 
-			Groups[groupIndex].Buttons.erase(buttonIndex);
+			GroupsBox.Groups[groupIndex].Buttons.erase(buttonIndex);
 
 			rebuild();
 
@@ -226,42 +224,108 @@ bool SSGUISideNavigateBar::dropButtonFromGroup(s32 groupID, s32 buttonID)
 	return false;
 }
 
-void SSGUISideNavigateBar::setIntervalAfterGroupCaption(s32 interval)
+void SSGUISideNavigateBar::setGroupsBoxCaptionFont(IGUIFont *font)
 {
-	s32 OldInterval = IntervalAfterGroupCaption;
+	if (!font)
+		font = Environment->getSkin()->getFont();
 
-	if (interval < 1)
-		IntervalAfterGroupCaption = 1;
+	GroupsBox.CaptionFont = font;
+
+	rebuild();
+}
+
+void SSGUISideNavigateBar::setGroupsBoxCaptionColor(SColor color)
+{
+	GroupsBox.CaptionColor = color;
+}
+
+void SSGUISideNavigateBar::setGroupsBoxCaptionHIndention(s32 indention)
+{
+	Indention OldIndention = GroupsBox.CaptionHIndention;
+
+	if (indention < 1)
+		GroupsBox.CaptionHIndention = Indention(1,1);
 	else
-		IntervalAfterGroupCaption = interval;
+		GroupsBox.CaptionHIndention = Indention(indention, indention);
 
-	if (IntervalAfterGroupCaption != OldInterval)
+	if (GroupsBox.CaptionHIndention != OldIndention)
 		rebuild();
 }
 
-void SSGUISideNavigateBar::setIntervalBetweenGroupButtons(s32 interval)
+void SSGUISideNavigateBar::setGroupsBoxCaptionHIndention(s32 leftIndention, s32 rightIndention)
 {
-	s32 OldInterval = IntervalBetweenGroupButtons;
+	Indention OldIndention = GroupsBox.CaptionHIndention;
 
-	if (interval < 1)
-		IntervalBetweenGroupButtons = 1;
+	if (leftIndention < 1)
+		GroupsBox.CaptionHIndention.FIndention = 1;
 	else
-		IntervalBetweenGroupButtons = interval;
+		GroupsBox.CaptionHIndention.FIndention = leftIndention;
 
-	if (IntervalBetweenGroupButtons != OldInterval)
+	if (rightIndention < 1)
+		GroupsBox.CaptionHIndention.SIndention = 1;
+	else
+		GroupsBox.CaptionHIndention.SIndention = rightIndention;
+
+	if (GroupsBox.CaptionHIndention != OldIndention)
 		rebuild();
 }
 
-void SSGUISideNavigateBar::setIntervalBetweenGroups(s32 interval)
+void SSGUISideNavigateBar::setGroupsBoxCaptionVIndention(s32 indention)
 {
-	s32 OldInterval = IntervalBetweenGroups;
+	s32 OldIndention = GroupsBox.CaptionVIndention;
+
+	if (indention < 1)
+		GroupsBox.CaptionVIndention = 1;
+	else
+		GroupsBox.CaptionVIndention = indention;
+
+	if (GroupsBox.CaptionVIndention != OldIndention)
+		rebuild();
+}
+
+void SSGUISideNavigateBar::setGroupsBoxCaptionCenter(bool center)
+{
+	GroupsBox.CaptionCenter = center;
+
+	rebuild();
+}
+
+void SSGUISideNavigateBar::setGroupsBoxIntervalAfterGroupCaption(s32 interval)
+{
+	s32 OldInterval = GroupsBox.IntervalAfterGroupCaption;
 
 	if (interval < 1)
-		IntervalBetweenGroups = 1;
+		GroupsBox.IntervalAfterGroupCaption = 1;
 	else
-		IntervalBetweenGroups = interval;
+		GroupsBox.IntervalAfterGroupCaption = interval;
 
-	if (IntervalBetweenGroups != OldInterval)
+	if (GroupsBox.IntervalAfterGroupCaption != OldInterval)
+		rebuild();
+}
+
+void SSGUISideNavigateBar::setGroupsBoxIntervalBetweenGroupButtons(s32 interval)
+{
+	s32 OldInterval = GroupsBox.IntervalBetweenGroupButtons;
+
+	if (interval < 1)
+		GroupsBox.IntervalBetweenGroupButtons = 1;
+	else
+		GroupsBox.IntervalBetweenGroupButtons = interval;
+
+	if (GroupsBox.IntervalBetweenGroupButtons != OldInterval)
+		rebuild();
+}
+
+void SSGUISideNavigateBar::setGroupsBoxIntervalBetweenGroups(s32 interval)
+{
+	s32 OldInterval = GroupsBox.IntervalBetweenGroups;
+
+	if (interval < 1)
+		GroupsBox.IntervalBetweenGroups = 1;
+	else
+		GroupsBox.IntervalBetweenGroups = interval;
+
+	if (GroupsBox.IntervalBetweenGroups != OldInterval)
 		rebuild();
 }
 
@@ -297,82 +361,82 @@ void SSGUISideNavigateBar::rebuild()
 
 	s32 gY = 0;
 
-	for (s32 i = 0; i < (s32)Groups.size(); i++)
+	for (s32 i = 0; i < (s32)GroupsBox.Groups.size(); i++)
 	{
-		Groups[i].Caption.Rect.UpperLeftCorner.X =
-			Container.Container->getAbsolutePosition().UpperLeftCorner.X + Groups[i].Caption.HIndention.FIndention;
-		Groups[i].Caption.Rect.UpperLeftCorner.Y =
-			Container.Container->getAbsolutePosition().UpperLeftCorner.Y + Groups[i].Caption.VIndention + gY;
-		Groups[i].Caption.Rect.LowerRightCorner.X =
-			Container.Container->getAbsolutePosition().LowerRightCorner.X - Groups[i].Caption.HIndention.SIndention;
-		Groups[i].Caption.Rect.LowerRightCorner.Y =
-			Groups[i].Caption.Rect.UpperLeftCorner.Y + Groups[i].Caption.Font->getDimension(L"").Height;
+		GroupsBox.Groups[i].Caption.Rect.UpperLeftCorner.X =
+			Container.Container->getAbsolutePosition().UpperLeftCorner.X + GroupsBox.CaptionHIndention.FIndention;
+		GroupsBox.Groups[i].Caption.Rect.UpperLeftCorner.Y =
+			Container.Container->getAbsolutePosition().UpperLeftCorner.Y + GroupsBox.CaptionVIndention + gY;
+		GroupsBox.Groups[i].Caption.Rect.LowerRightCorner.X =
+			Container.Container->getAbsolutePosition().LowerRightCorner.X - GroupsBox.CaptionHIndention.SIndention;
+		GroupsBox.Groups[i].Caption.Rect.LowerRightCorner.Y =
+			GroupsBox.Groups[i].Caption.Rect.UpperLeftCorner.Y + GroupsBox.CaptionFont->getDimension(L"").Height;
 
-		if (!Groups[i].Container)
-			Groups[i].Container = new IGUIElement(EGUIET_ELEMENT, Environment, Container.Container, -1, rect<s32>(0,0,0,0));
+		if (!GroupsBox.Groups[i].Container)
+			GroupsBox.Groups[i].Container = new IGUIElement(EGUIET_ELEMENT, Environment, Container.Container, -1, rect<s32>(0,0,0,0));
 
 		rect<s32> GContainerRect;
 
 		GContainerRect.UpperLeftCorner.X = 0;
-		GContainerRect.UpperLeftCorner.Y = gY + Groups[i].Caption.Rect.getHeight() + IntervalAfterGroupCaption;
+		GContainerRect.UpperLeftCorner.Y = gY + GroupsBox.Groups[i].Caption.Rect.getHeight() + GroupsBox.IntervalAfterGroupCaption;
 		GContainerRect.LowerRightCorner.X = Container.Container->getAbsolutePosition().getWidth();
 		GContainerRect.LowerRightCorner.Y = GContainerRect.UpperLeftCorner.Y;
 
-		Groups[i].Container->setRelativePosition(GContainerRect);
+		GroupsBox.Groups[i].Container->setRelativePosition(GContainerRect);
 
 		s32 LastButtonIndex = -1;
 
 		s32 bY = 0;
 
-		for (s32 n = 0; n < (s32)Groups[i].Buttons.size(); n++)
+		for (s32 n = 0; n < (s32)GroupsBox.Groups[i].Buttons.size(); n++)
 		{
-			if (!Groups[i].Container->isMyChild(Groups[i].Buttons[n].Button))
-				Groups[i].Container->addChild(Groups[i].Buttons[n].Button);
+			if (!GroupsBox.Groups[i].Container->isMyChild(GroupsBox.Groups[i].Buttons[n].Button))
+				GroupsBox.Groups[i].Container->addChild(GroupsBox.Groups[i].Buttons[n].Button);
 
 			s32 X, Y;
-			s32 Width = Groups[i].Buttons[n].Button->getAbsolutePosition().getWidth();
-			s32 Height = Groups[i].Buttons[n].Button->getAbsolutePosition().getHeight();
+			s32 Width = GroupsBox.Groups[i].Buttons[n].Button->getAbsolutePosition().getWidth();
+			s32 Height = GroupsBox.Groups[i].Buttons[n].Button->getAbsolutePosition().getHeight();
 
-			switch (Groups[i].Buttons[n].Alignment)
+			switch (GroupsBox.Groups[i].Buttons[n].Alignment)
 			{
 			case SSGUIA_UPPERLEFT:
 				X = 0;
 				break;
 			case SSGUIA_BOTTOMRIGHT:
-				X = Groups[i].Container->getAbsolutePosition().getWidth() - Width;
+				X = GroupsBox.Groups[i].Container->getAbsolutePosition().getWidth() - Width;
 				break;
 			case SSGUIA_CENTER:
-				X = s32((Groups[i].Container->getAbsolutePosition().getWidth() - Width) / 2);
+				X = s32((GroupsBox.Groups[i].Container->getAbsolutePosition().getWidth() - Width) / 2);
 				break;
 			}
 
 			Y = bY;
 
-			Groups[i].Buttons[n].Button->setRelativePosition(rect<s32>(X, Y, X + Width, Y + Height));
+			GroupsBox.Groups[i].Buttons[n].Button->setRelativePosition(rect<s32>(X, Y, X + Width, Y + Height));
 
-			bY += Height + IntervalBetweenGroupButtons;
+			bY += Height + GroupsBox.IntervalBetweenGroupButtons;
 
 			LastButtonIndex = n;
 		}
 
 		if (LastButtonIndex >= 0)
-			GContainerRect.LowerRightCorner.Y += Groups[i].Buttons[LastButtonIndex].Button->getAbsolutePosition().LowerRightCorner.Y -
-			Groups[i].Container->getAbsolutePosition().UpperLeftCorner.Y;
+			GContainerRect.LowerRightCorner.Y += GroupsBox.Groups[i].Buttons[LastButtonIndex].Button->getAbsolutePosition().LowerRightCorner.Y -
+			GroupsBox.Groups[i].Container->getAbsolutePosition().UpperLeftCorner.Y;
 
-		Groups[i].Container->setRelativePosition(GContainerRect);
+		GroupsBox.Groups[i].Container->setRelativePosition(GContainerRect);
 
-		gY = Groups[i].Container->getRelativePosition().LowerRightCorner.Y + IntervalBetweenGroups;
+		gY = GroupsBox.Groups[i].Container->getRelativePosition().LowerRightCorner.Y + GroupsBox.IntervalBetweenGroups;
 
 		if (Container.Container->getAbsolutePosition().isPointInside(position2d<s32>(Container.Container->getAbsolutePosition().LowerRightCorner.X -1,
-			Groups[i].Container->getAbsolutePosition().LowerRightCorner.Y)))
+			GroupsBox.Groups[i].Container->getAbsolutePosition().LowerRightCorner.Y)))
 		{
-			Groups[i].Container->setVisible(true);
-			Groups[i].Caption.Visible = true;
+			GroupsBox.Groups[i].Container->setVisible(true);
+			GroupsBox.Groups[i].Caption.Visible = true;
 		}
 		else
 		{
-			Groups[i].Container->setVisible(false);
-			Groups[i].Caption.Visible = false;
+			GroupsBox.Groups[i].Container->setVisible(false);
+			GroupsBox.Groups[i].Caption.Visible = false;
 			break;
 		}
 	}
@@ -444,11 +508,11 @@ void SSGUISideNavigateBar::setCaptionCenterAlignment(bool center)
 
 void SSGUISideNavigateBar::update()
 {
-	if (Image)
+	if (Background)
 	{
 		dimension2d<s32> screenSize = Environment->getVideoDriver()->getScreenSize();
-		s32 Width = Image->getOriginalSize().Width;
-		s32 Height = Image->getOriginalSize().Height;
+		s32 Width = Background->getOriginalSize().Width;
+		s32 Height = Background->getOriginalSize().Height;
 
 		rect<s32> rectangle;
 		rectangle.UpperLeftCorner.X = screenSize.Width - HIndention - Width + Displacement;
@@ -464,15 +528,15 @@ bool SSGUISideNavigateBar::OnEvent(const SEvent &event)
 {
 	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
 	{
-		for (s32 i = 0; i < (s32)Groups.size(); i++)
+		for (s32 i = 0; i < (s32)GroupsBox.Groups.size(); i++)
 		{
-			for (s32 n = 0; n < (s32)Groups[i].Buttons.size(); n++)
+			for (s32 n = 0; n < (s32)GroupsBox.Groups[i].Buttons.size(); n++)
 			{
-				if (Groups[i].Buttons[n].Button == event.GUIEvent.Caller)
+				if (GroupsBox.Groups[i].Buttons[n].Button == event.GUIEvent.Caller)
 				{
 					if (Callback)
 					{
-						Callback(Groups[i].ID, Groups[i].Buttons[n].ID);
+						Callback(GroupsBox.Groups[i].ID, GroupsBox.Groups[i].Buttons[n].ID);
 					}
 					break;
 				}
@@ -497,10 +561,10 @@ void SSGUISideNavigateBar::draw()
 		return;
 	}
 
-	if (Image && IsVisible)
+	if (Background && IsVisible)
 	{
 	// drawing background
-		driver->draw2DImage(Image, AbsoluteRect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), Image->getOriginalSize()),
+		driver->draw2DImage(Background, AbsoluteRect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), Background->getOriginalSize()),
 			0, SColor(255,255,255,255), true);
 
 	// drawing caption
@@ -510,15 +574,15 @@ void SSGUISideNavigateBar::draw()
 
 		position2d<s32> startLine, endLine;
 
-		for (s32 i = 0; i < (s32)Groups.size(); i++)
+		for (s32 i = 0; i < (s32)GroupsBox.Groups.size(); i++)
 		{
-			if (Groups[i].Caption.Caption && Groups[i].Caption.Visible)
-				Groups[i].Caption.Font->draw(Groups[i].Caption.Caption, Groups[i].Caption.Rect, Groups[i].Caption.Color, Groups[i].Caption.Center);
+			if (GroupsBox.Groups[i].Caption.Caption && GroupsBox.Groups[i].Caption.Visible)
+				GroupsBox.CaptionFont->draw(GroupsBox.Groups[i].Caption.Caption, GroupsBox.Groups[i].Caption.Rect, GroupsBox.CaptionColor, GroupsBox.CaptionCenter);
 
 			startLine.X = AbsoluteRect.UpperLeftCorner.X + s32((Container.Container->getAbsolutePosition().UpperLeftCorner.X - AbsoluteRect.UpperLeftCorner.X) * 0.45f);
 			startLine.Y = Caption.Rect.LowerRightCorner.Y + s32((AbsoluteRect.LowerRightCorner.Y - Caption.Rect.LowerRightCorner.Y) * 0.01f);
 			endLine.X = startLine.X;
-			endLine.Y = Groups[i].Caption.Rect.LowerRightCorner.Y - s32(Groups[i].Caption.Rect.getHeight() / 2);
+			endLine.Y = GroupsBox.Groups[i].Caption.Rect.LowerRightCorner.Y - s32(GroupsBox.Groups[i].Caption.Rect.getHeight() / 2);
 
 			driver->draw2DLine(startLine, endLine, LineColor);
 
@@ -616,6 +680,45 @@ void SSGUISideNavigateBar::OnPostRender(u32 timeMs)
 	prevTime = timeMs;
 }
 
+void SSGUISideNavigateBar::setSSButtonElementsForAll(ITexture *b_up, ITexture *b_mouse_over, ITexture *b_down, ITexture *b_inactive, IGUIFont *font, SColor color)
+{
+	for (s32 i = 0; i < (s32)GroupsBox.Groups.size(); i++)
+	{
+		for (s32 n = 0; n < (s32)GroupsBox.Groups[i].Buttons.size(); n++)
+		{
+			((SSGUIButton*)GroupsBox.Groups[i].Buttons[n].Button)->setVisualState(SSGBS_BUTTON_UP, b_up);
+			((SSGUIButton*)GroupsBox.Groups[i].Buttons[n].Button)->setVisualState(SSGBS_BUTTON_MOUSE_OVER, b_mouse_over);
+			((SSGUIButton*)GroupsBox.Groups[i].Buttons[n].Button)->setVisualState(SSGBS_BUTTON_DOWN, b_down);
+			((SSGUIButton*)GroupsBox.Groups[i].Buttons[n].Button)->setVisualState(SSGBS_BUTTON_INACTIVE, b_inactive);
+			((SSGUIButton*)GroupsBox.Groups[i].Buttons[n].Button)->setOverrideFont(font);
+			((SSGUIButton*)GroupsBox.Groups[i].Buttons[n].Button)->setOverrideColor(color);
+		}
+	}
+	rebuild();
+}
+
+void SSGUISideNavigateBar::deserializeAttributes(IAttributes *in, SAttributeReadWriteOptions *options)
+{
+	IVideoDriver *driver = Environment->getVideoDriver();
+
+	Background = driver->getTexture(in->getAttributeAsString("background").c_str());
+
+	HIndention = in->getAttributeAsInt("hindention");
+	VIndention = in->getAttributeAsInt("vindention");
+
+	Caption.Font = Environment->getFont(in->getAttributeAsString("caption_font").c_str());
+
+	Container.HIndention = Indention(in->getAttributeAsInt("container_lefthindention"), in->getAttributeAsInt("container_righthindention"));
+	Container.VIndention = Indention(in->getAttributeAsInt("container_topindention"), in->getAttributeAsInt("container_bottomhindention"));
+
+	GroupsBox.CaptionFont = Environment->getFont(in->getAttributeAsString("groups_caption_font").c_str());
+	GroupsBox.CaptionHIndention = Indention(in->getAttributeAsInt("groups_caption_lefthindention"), in->getAttributeAsInt("groups_caption_righthindention"));
+	GroupsBox.CaptionVIndention = in->getAttributeAsInt("groups_caption_vindention");
+	GroupsBox.IntervalAfterGroupCaption = in->getAttributeAsInt("groups_interval_after_caption");
+	GroupsBox.IntervalBetweenGroupButtons = in->getAttributeAsInt("groups_interval_between_buttons");
+	GroupsBox.IntervalBetweenGroups = in->getAttributeAsInt("interval_between_groups");
+}
+
 s32 SSGUISideNavigateBar::getFreeGroupID()
 {
 	s32 ID = -1;
@@ -623,9 +726,9 @@ s32 SSGUISideNavigateBar::getFreeGroupID()
 	while (ID == -1)
 	{
 		bool avalible = true;
-		for (s32 i = 0; i < (s32)Groups.size(); i++)
+		for (s32 i = 0; i < (s32)GroupsBox.Groups.size(); i++)
 		{
-			if (Groups[i].ID == id)
+			if (GroupsBox.Groups[i].ID == id)
 				avalible = false;
 		}
 		if (!avalible)
@@ -641,9 +744,9 @@ s32 SSGUISideNavigateBar::getFreeGroupID()
 
 s32 SSGUISideNavigateBar::getGroupIndex(s32 groupID)
 {
-	for (s32 i = 0; i < (s32)Groups.size(); i++)
+	for (s32 i = 0; i < (s32)GroupsBox.Groups.size(); i++)
 	{
-		if (Groups[i].ID == groupID)
+		if (GroupsBox.Groups[i].ID == groupID)
 			return i;
 	}
 	return -1;
@@ -659,9 +762,9 @@ s32 SSGUISideNavigateBar::getFreeButtonID(s32 groupID)
 		while (ID == -1)
 		{
 			bool avalible = true;
-			for (s32 i = 0; i < (s32)Groups[groupIndex].Buttons.size(); i++)
+			for (s32 i = 0; i < (s32)GroupsBox.Groups[groupIndex].Buttons.size(); i++)
 			{
-				if (Groups[groupIndex].Buttons[i].ID == id)
+				if (GroupsBox.Groups[groupIndex].Buttons[i].ID == id)
 					avalible = false;
 			}
 			if (!avalible)
@@ -683,9 +786,9 @@ s32 SSGUISideNavigateBar::getButtonIndex(s32 groupID, s32 buttonID)
 	s32 groupIndex = getGroupIndex(groupID);
 	if (groupIndex >= 0)
 	{
-		for (s32 i = 0; i < (s32)Groups[groupIndex].Buttons.size(); i++)
+		for (s32 i = 0; i < (s32)GroupsBox.Groups[groupIndex].Buttons.size(); i++)
 		{
-			if (Groups[groupIndex].Buttons[i].ID == buttonID)
+			if (GroupsBox.Groups[groupIndex].Buttons[i].ID == buttonID)
 				return i;
 		}
 	}

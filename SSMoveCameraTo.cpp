@@ -1,6 +1,8 @@
 #include "SSMoveCameraTo.h"
 #include "SSCameraRotateAnimator.h"
 
+#include "SSGUI.h"
+
 bool CorrectPosFlag = false;
 extern IVideoDriver* driver;
 u32 x = 0;
@@ -20,13 +22,14 @@ void t1()
 
 	if (FinalNode->getPosition() != vector3df(0,0,0)) bar2->hide();
 	else bar1->hide();
-	for (; x < 255; x++) Sleep(4);
+	for (; x < 255; x++) Sleep(1);
 	CamToMove->removeAnimators();
 	CamToMove->addAnimator(animRot);
 	CamToMove->setPosition(FinalPosition);
+	FillSideInfoBar(currentPlanetID);
 	if (FinalNode->getPosition() != vector3df(0,0,0)) bar1->show();
 	else bar2->show();
-	for (; x > 0; x--) Sleep(4);
+	for (; x > 0; x--) Sleep(1);
 }
 
 DWORD threadId1;
@@ -66,5 +69,5 @@ vector3df CalcFinalPos(ISceneNode* node, f32 length)
 void MovingCamera()
 {
 	if (x)
-		driver->draw2DRectangle(SColor(x, 255, 255, 255), rect<s32>(position2d<s32>(0,0), driver->getScreenSize()));
+		driver->draw2DRectangle(SColor(x, 0, 0, 0), rect<s32>(position2d<s32>(0,0), driver->getScreenSize()));
 }

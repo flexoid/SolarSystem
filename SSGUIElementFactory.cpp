@@ -48,3 +48,8 @@ const c8* SSGUIElementFactory::getCreateableGUIElementTypeName(s32 idx) const
 
 	return 0;
 }
+
+IGUIEnvironment* SSGUIElementFactory::getGUIEnvironment()
+{
+	return Environment;
+}

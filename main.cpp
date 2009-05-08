@@ -40,6 +40,8 @@ ISceneNode* saturn;
 ISceneNode* uranus;
 ISceneNode* neptune;
 
+ISceneNode* Planets[10];
+
 ICameraSceneNode *camera; //Камера
 
 void GlobalView()
@@ -47,29 +49,86 @@ void GlobalView()
 	SSMoveCameraTo(camera, sun, SideInfoBar, SideNavigateBar);
 }
 
+void PrevPlanet()
+{
+	currentPlanetID--;
+	if (currentPlanetID < 0)
+		currentPlanetID = 9;
+	SSMoveCameraTo(camera, Planets[currentPlanetID], SideInfoBar, SideNavigateBar);
+}
+
+void NextPlanet()
+{
+	currentPlanetID++;
+	if (currentPlanetID > 9)
+		currentPlanetID = 0;
+	SSMoveCameraTo(camera, Planets[currentPlanetID], SideInfoBar, SideNavigateBar);
+}
+
+void Minimize()
+{
+	HWND hWnd = FindWindow(L"CIrrDeviceWin32", 0);
+	ShowWindow(hWnd, SW_MINIMIZE);
+}
+
+void Exit()
+{
+	device->closeDevice();
+}
+
 void SideNavigateBarCallback(s32 groupID, s32 buttonID)
 {
 	if (groupID == 0 && buttonID == 0)
+	{
+		currentPlanetID = 0;
 		SSMoveCameraTo(camera, sun, SideInfoBar, SideNavigateBar);
+	}
 	if (groupID == 1 && buttonID == 0)
+	{
+		currentPlanetID = 1;
 		SSMoveCameraTo(camera, mercury, SideInfoBar, SideNavigateBar);
+	}
 	if (groupID == 1 && buttonID == 1)
+	{
+		currentPlanetID = 2;
 		SSMoveCameraTo(camera, venus, SideInfoBar, SideNavigateBar);
+	}
 	if (groupID == 1 && buttonID == 2)
+	{
+		currentPlanetID = 3;
 		SSMoveCameraTo(camera, earth, SideInfoBar, SideNavigateBar);
+	}
 	if (groupID == 1 && buttonID == 3)
+	{
+		currentPlanetID = 4;
 		SSMoveCameraTo(camera, mars, SideInfoBar, SideNavigateBar);
+	}
 	if (groupID == 1 && buttonID == 4)
+	{
+		currentPlanetID = 5;
 		SSMoveCameraTo(camera, jupiter, SideInfoBar, SideNavigateBar);
+	}
 	if (groupID == 1 && buttonID == 5)
+	{
+		currentPlanetID = 6;
 		SSMoveCameraTo(camera, saturn, SideInfoBar, SideNavigateBar);
+	}
 	if (groupID == 1 && buttonID == 6)
+	{
+		currentPlanetID = 7;
 		SSMoveCameraTo(camera, uranus, SideInfoBar, SideNavigateBar);
+	}
 	if (groupID == 1 && buttonID == 7)
+	{
+		currentPlanetID = 8;
 		SSMoveCameraTo(camera, neptune, SideInfoBar, SideNavigateBar);
+	}
 
 	if (groupID == 2 && buttonID == 0)
+	{
+		currentPlanetID = 9;
 		SSMoveCameraTo(camera, pluto, SideInfoBar, SideNavigateBar);
+	}
 }
 
 void test(void)
@@ -147,8 +206,18 @@ int main()
 	saturn = AddSaturn();
 	uranus = AddUranus();
 	neptune = AddNeptune();
+	Planets[0] = sun;
+	Planets[1] = mercury;
+	Planets[2] = venus;
+	Planets[3] = earth;
+	Planets[4] = mars;
+	Planets[5] = jupiter;
+	Planets[6] = saturn;
+	Planets[7] = uranus;
+	Planets[8] = neptune;
+	Planets[9] = pluto;
 	//--------
-	
+
 	//----Небо
 	ITexture *skyTexture = driver->getTexture(".\\data\\hipp8.jpg");
 	smgr->addSkyBoxSceneNode(skyTexture, skyTexture, skyTexture, 
@@ -160,6 +229,8 @@ int main()
 	camera->setFarValue(999999.0f);
 
 	InitializeGUI(guienv);
+
+
 
 	//-----Реализация рендеринга в отдельном потоке-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);

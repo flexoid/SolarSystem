@@ -4,42 +4,28 @@ SSGUISideInfoBar::SSGUISideInfoBar(IGUIEnvironment *environment, IGUIElement *pa
 				: IGUIElement(EGUIET_ELEMENT, environment, parent, -1, rect<s32>(0,0,0,0))
 {
 	TitleBox.Background = 0;
-	TitleBox.Caption.Color = SColor(255,255,255,255);
-	TitleBox.Caption.Font = Environment->getSkin()->getFont();
-	TitleBox.Caption.HCener = false;
-	TitleBox.Caption.Rect = rect<s32>(0,0,0,0);
-	TitleBox.Caption.Text = 0;
-	TitleBox.Caption.VCenter = false;
+	TitleBox.Image.Image = 0;
+	TitleBox.Image.Rect = rect<s32>(0,0,0,0);
+	TitleBox.Color = SColor(255,255,255,255);
 	TitleBox.Rect = rect<s32>(0,0,0,0);
 
 	ImageBox.Background = 0;
-	ImageBox.Icon.HCenter = false;
-	ImageBox.Icon.Image = 0;
-	ImageBox.Icon.Rect = rect<s32>(0,0,0,0);
-	ImageBox.Icon.VCenter = false;
-	ImageBox.Image.HCenter = false;
 	ImageBox.Image.Image = 0;
 	ImageBox.Image.Rect = rect<s32>(0,0,0,0);
-	ImageBox.Image.VCenter = false;
-	ImageBox.ImageBackground.HCenter = false;
-	ImageBox.ImageBackground.Image = 0;
-	ImageBox.ImageBackground.Rect = rect<s32>(0,0,0,0);
-	ImageBox.ImageBackground.VCenter = false;
+	ImageBox.Color = SColor(255,255,255,255);
 	ImageBox.Rect = rect<s32>(0,0,0,0);
 
-	PHInfoBox.Background = 0;
-	PHInfoBox.TextBox.HIndention = 0;
-	PHInfoBox.TextBox.IntervalBetweenLines = 0;
-	PHInfoBox.TextBox.VIndention = 0;
-	PHInfoBox.TextBox.Rect = rect<s32>(0,0,0,0);
-	PHInfoBox.TextBox.Font = 0;
-	PHInfoBox.TextBox.ColorLeft = SColor(255,255,255,255);
-	PHInfoBox.TextBox.ColorRight = SColor(255,255,255,255);
-	PHInfoBox.Rect = rect<s32>(0,0,0,0);
-
 	GInfoBox.Background = 0;
-	GInfoBox.Text = Environment->addStaticText(0, rect<s32>(0,0,0,0));
+	GInfoBox.Image.Image = 0;
+	GInfoBox.Image.Rect = rect<s32>(0,0,0,0);
+	GInfoBox.Color = SColor(255,255,255,255);
 	GInfoBox.Rect = rect<s32>(0,0,0,0);
+
+	PHInfoBox.Background = 0;
+	PHInfoBox.Image.Image = 0;
+	PHInfoBox.Image.Rect = rect<s32>(0,0,0,0);
+	PHInfoBox.Color = SColor(255,255,255,255);
+	PHInfoBox.Rect = rect<s32>(0,0,0,0);
 
 	Displacement.GInfoBox = 0;
 	Displacement.ImageBox = 0;
@@ -59,16 +45,20 @@ SSGUISideInfoBar::~SSGUISideInfoBar()
 {
 	if (TitleBox.Background)
 		TitleBox.Background->drop();
+	if (TitleBox.Image.Image)
+		TitleBox.Image.Image->drop();
 	if (ImageBox.Background)
 		ImageBox.Background->drop();
-	if (ImageBox.Icon.Image)
-		ImageBox.Icon.Image->drop();
 	if (ImageBox.Image.Image)
 		ImageBox.Image.Image->drop();
-	if (PHInfoBox.Background)
-		PHInfoBox.Background->drop();
 	if (GInfoBox.Background)
 		GInfoBox.Background->drop();
+	if (GInfoBox.Image.Image)
+		GInfoBox.Image.Image->drop();
+	if (PHInfoBox.Background)
+		PHInfoBox.Background->drop();
+	if (PHInfoBox.Image.Image)
+		PHInfoBox.Image.Image->drop();
 }
 
 void SSGUISideInfoBar::update()
@@ -87,17 +77,17 @@ void SSGUISideInfoBar::update()
 			Width = ImageBox.Background->getSize().Width;
 		sumHeight += ImageBox.Background->getSize().Height;
 	}
-	if (PHInfoBox.Background)
-	{
-		if (PHInfoBox.Background->getSize().Width > Width)
-			Width = PHInfoBox.Background->getSize().Width;
-		sumHeight += PHInfoBox.Background->getSize().Height;
-	}
 	if (GInfoBox.Background)
 	{
 		if (GInfoBox.Background->getSize().Width > Width)
 			Width = GInfoBox.Background->getSize().Width;
 		sumHeight += GInfoBox.Background->getSize().Height;
+	}
+	if (PHInfoBox.Background)
+	{
+		if (PHInfoBox.Background->getSize().Width > Width)
+			Width = PHInfoBox.Background->getSize().Width;
+		sumHeight += PHInfoBox.Background->getSize().Height;
 	}
 
 	dimension2d<s32> screenSize = Environment->getVideoDriver()->getScreenSize();
@@ -124,9 +114,12 @@ void SSGUISideInfoBar::rebuild()
 		TitleBox.Rect.LowerRightCorner.X = TitleBox.Rect.UpperLeftCorner.X + TitleBox.Background->getSize().Width;
 		TitleBox.Rect.LowerRightCorner.Y = TitleBox.Rect.UpperLeftCorner.Y + TitleBox.Background->getSize().Height;
 
-		TitleBox.Caption.Rect = TitleBox.Rect;
-		if (!TitleBox.Caption.Font)
-			TitleBox.Caption.Font = Environment->getSkin()->getFont();
+		if (TitleBox.Image.Image)
+		{
+			TitleBox.Image.Rect.UpperLeftCorner.X = TitleBox.Rect.UpperLeftCorner.X + s32((TitleBox.Rect.getWidth() - TitleBox.Image.Image->getSize().Width) / 2);
+			TitleBox.Image.Rect.UpperLeftCorner.Y = TitleBox.Rect.UpperLeftCorner.Y + s32((TitleBox.Rect.getHeight() - TitleBox.Image.Image->getSize().Height) / 2);
+			TitleBox.Image.Rect.LowerRightCorner = TitleBox.Image.Rect.UpperLeftCorner + TitleBox.Image.Image->getSize();
+		}
 
 		Y += TitleBox.Background->getSize().Height + IntervalBetweenBoxes;
 	}
@@ -138,102 +131,45 @@ void SSGUISideInfoBar::rebuild()
 		ImageBox.Rect.LowerRightCorner.X = ImageBox.Rect.UpperLeftCorner.X + ImageBox.Background->getSize().Width;
 		ImageBox.Rect.LowerRightCorner.Y = ImageBox.Rect.UpperLeftCorner.Y + ImageBox.Background->getSize().Height;
 
-		if (ImageBox.ImageBackground.Image)
+		if (ImageBox.Image.Image)
 		{
-			ImageBox.ImageBackground.Rect.UpperLeftCorner.X = X + s32((ImageBox.Rect.getWidth() - ImageBox.ImageBackground.Image->getSize().Width) / 2) + Displacement.ImageBox;
-			ImageBox.ImageBackground.Rect.UpperLeftCorner.Y = Y + s32((ImageBox.Rect.getHeight() - ImageBox.ImageBackground.Image->getSize().Height) / 2);
-			ImageBox.ImageBackground.Rect.LowerRightCorner.X = ImageBox.ImageBackground.Rect.UpperLeftCorner.X + ImageBox.ImageBackground.Image->getSize().Width;
-			ImageBox.ImageBackground.Rect.LowerRightCorner.Y = ImageBox.ImageBackground.Rect.UpperLeftCorner.Y + ImageBox.ImageBackground.Image->getSize().Height;
-
-			if (ImageBox.Image.Image)
-			{
-				ImageBox.Image.Rect.UpperLeftCorner.X = ImageBox.ImageBackground.Rect.UpperLeftCorner.X + s32((ImageBox.ImageBackground.Rect.getWidth() - ImageBox.Image.Image->getSize().Width) / 2);
-				ImageBox.Image.Rect.UpperLeftCorner.Y = ImageBox.ImageBackground.Rect.UpperLeftCorner.Y + s32((ImageBox.ImageBackground.Rect.getHeight() - ImageBox.Image.Image->getSize().Height) / 2);
-				ImageBox.Image.Rect.LowerRightCorner.X = ImageBox.Image.Rect.UpperLeftCorner.X + ImageBox.Image.Image->getSize().Width;
-				ImageBox.Image.Rect.LowerRightCorner.Y = ImageBox.Image.Rect.UpperLeftCorner.Y + ImageBox.Image.Image->getSize().Height;
-
-				if (ImageBox.Icon.Image)
-				{
-					ImageBox.Icon.Rect.UpperLeftCorner.X = ImageBox.ImageBackground.Rect.LowerRightCorner.X - ImageBox.Icon.Image->getSize().Width - s32(ImageBox.ImageBackground.Rect.getWidth() * 0.03f);
-					ImageBox.Icon.Rect.UpperLeftCorner.Y = ImageBox.ImageBackground.Rect.LowerRightCorner.Y - ImageBox.Icon.Image->getSize().Height - s32(ImageBox.ImageBackground.Rect.getWidth() * 0.03f);
-					ImageBox.Icon.Rect.LowerRightCorner.X = ImageBox.Icon.Rect.UpperLeftCorner.X + ImageBox.Icon.Rect.getWidth();
-					ImageBox.Icon.Rect.LowerRightCorner.Y = ImageBox.Icon.Rect.UpperLeftCorner.Y + ImageBox.Icon.Rect.getHeight();
-				}
-			}
+			ImageBox.Image.Rect.UpperLeftCorner.X = ImageBox.Rect.UpperLeftCorner.X + s32((ImageBox.Rect.getWidth() - ImageBox.Image.Image->getSize().Width) / 2);
+			ImageBox.Image.Rect.UpperLeftCorner.Y = ImageBox.Rect.UpperLeftCorner.Y + s32((ImageBox.Rect.getHeight() - ImageBox.Image.Image->getSize().Height) / 2);
+			ImageBox.Image.Rect.LowerRightCorner = ImageBox.Image.Rect.UpperLeftCorner + ImageBox.Image.Image->getSize();
 		}
 
 		Y += ImageBox.Background->getSize().Height + IntervalBetweenBoxes;
+	}
 
-		if (PHInfoBox.Background)
+	if (GInfoBox.Background)
+	{
+		GInfoBox.Rect.UpperLeftCorner.X = X + s32((Width - GInfoBox.Background->getSize().Width) / 2) + Displacement.GInfoBox;
+		GInfoBox.Rect.UpperLeftCorner.Y = Y;
+		GInfoBox.Rect.LowerRightCorner.X = GInfoBox.Rect.UpperLeftCorner.X + GInfoBox.Background->getSize().Width;
+		GInfoBox.Rect.LowerRightCorner.Y = GInfoBox.Rect.UpperLeftCorner.Y + GInfoBox.Background->getSize().Height;
+
+		if (GInfoBox.Image.Image)
 		{
-			PHInfoBox.Rect.UpperLeftCorner.X = X + s32((Width - PHInfoBox.Background->getSize().Width) / 2) + Displacement.PHInfoBox;
-			PHInfoBox.Rect.UpperLeftCorner.Y = Y;
-			PHInfoBox.Rect.LowerRightCorner.X = PHInfoBox.Rect.UpperLeftCorner.X + PHInfoBox.Background->getSize().Width;
-			PHInfoBox.Rect.LowerRightCorner.Y = PHInfoBox.Rect.UpperLeftCorner.Y + PHInfoBox.Background->getSize().Height;
-
-			if (PHInfoBox.TextBox.TextBox.size() > 0)
-			{
-				PHInfoBox.TextBox.Rect.UpperLeftCorner.X = PHInfoBox.Rect.UpperLeftCorner.X + PHInfoBox.TextBox.HIndention;
-				PHInfoBox.TextBox.Rect.UpperLeftCorner.Y = PHInfoBox.Rect.UpperLeftCorner.Y + PHInfoBox.TextBox.VIndention;
-				PHInfoBox.TextBox.Rect.LowerRightCorner.X = PHInfoBox.Rect.LowerRightCorner.X - PHInfoBox.TextBox.HIndention;
-				PHInfoBox.TextBox.Rect.LowerRightCorner.Y = PHInfoBox.Rect.LowerRightCorner.Y - PHInfoBox.TextBox.VIndention;
-
-				if (!PHInfoBox.TextBox.Font)
-					PHInfoBox.TextBox.Font = Environment->getSkin()->getFont();
-
-				PHInfoBox.TextBox.IntervalBetweenLines = s32(PHInfoBox.TextBox.Font->getDimension(L"A").Height * 0.25);
-
-				s32 PHY = 0;
-				for (s32 i = 0; i < (s32)PHInfoBox.TextBox.TextBox.size(); i++)
-				{
-					rect<s32> rectangle = rect<s32>(0,0,0,0);
-					rectangle.UpperLeftCorner.X = PHInfoBox.TextBox.Rect.UpperLeftCorner.X;
-					rectangle.UpperLeftCorner.Y = PHInfoBox.TextBox.Rect.UpperLeftCorner.Y + PHY;
-					rectangle.LowerRightCorner.X = PHInfoBox.TextBox.Rect.LowerRightCorner.X;
-					rectangle.LowerRightCorner.Y = rectangle.UpperLeftCorner.Y + PHInfoBox.TextBox.Font->getDimension(L"A").Height;
-
-					if (PHInfoBox.TextBox.Rect.isPointInside(rectangle.LowerRightCorner))
-					{
-						PHInfoBox.TextBox.TextBox[i].Rect = rectangle;
-
-						rectangle.UpperLeftCorner.X = PHInfoBox.TextBox.TextBox[i].Rect.UpperLeftCorner.X;
-						rectangle.UpperLeftCorner.Y = PHInfoBox.TextBox.TextBox[i].Rect.UpperLeftCorner.Y;
-						rectangle.LowerRightCorner.X = rectangle.UpperLeftCorner.X + PHInfoBox.TextBox.Font->getDimension(PHInfoBox.TextBox.TextBox[i].Left.Text).Width;
-						rectangle.LowerRightCorner.Y = PHInfoBox.TextBox.TextBox[i].Rect.LowerRightCorner.Y;
-						PHInfoBox.TextBox.TextBox[i].Left.Rect = rectangle;
-
-						rectangle.UpperLeftCorner.X = PHInfoBox.TextBox.TextBox[i].Rect.LowerRightCorner.X - PHInfoBox.TextBox.Font->getDimension(PHInfoBox.TextBox.TextBox[i].Right.Text).Width;
-						rectangle.LowerRightCorner.X = PHInfoBox.TextBox.TextBox[i].Rect.LowerRightCorner.X;
-						PHInfoBox.TextBox.TextBox[i].Right.Rect = rectangle;
-					}
-					else
-					{
-						break;
-					}
-
-					PHY += PHInfoBox.TextBox.TextBox[i].Rect.getHeight() + PHInfoBox.TextBox.IntervalBetweenLines;
-				}
-			}
-
-			Y += PHInfoBox.Background->getSize().Height + IntervalBetweenBoxes;
+			GInfoBox.Image.Rect.UpperLeftCorner.X = GInfoBox.Rect.UpperLeftCorner.X + s32((GInfoBox.Rect.getWidth() - GInfoBox.Image.Image->getSize().Width) / 2);
+			GInfoBox.Image.Rect.UpperLeftCorner.Y = GInfoBox.Rect.UpperLeftCorner.Y + s32((GInfoBox.Rect.getHeight() - GInfoBox.Image.Image->getSize().Height) / 2);
+			GInfoBox.Image.Rect.LowerRightCorner = GInfoBox.Rect.UpperLeftCorner + GInfoBox.Image.Image->getSize();
 		}
 
-		if (GInfoBox.Background)
-		{
-			GInfoBox.Rect.UpperLeftCorner.X = X + s32((Width - GInfoBox.Background->getSize().Width) / 2) + Displacement.GInfoBox;
-			GInfoBox.Rect.UpperLeftCorner.Y = Y;
-			GInfoBox.Rect.LowerRightCorner.X = GInfoBox.Rect.UpperLeftCorner.X + GInfoBox.Background->getSize().Width;
-			GInfoBox.Rect.LowerRightCorner.Y = GInfoBox.Rect.UpperLeftCorner.Y + GInfoBox.Background->getSize().Height;
+		Y += GInfoBox.Background->getSize().Height + IntervalBetweenBoxes;
+	}
 
-			if (GInfoBox.Text->getText())
-			{
-				rect<s32> rectangle = rect<s32>(0,0,0,0);
-				rectangle.UpperLeftCorner.X = GInfoBox.Rect.UpperLeftCorner.X + 20;
-				rectangle.UpperLeftCorner.Y = GInfoBox.Rect.UpperLeftCorner.Y + 20;
-				rectangle.LowerRightCorner.X = GInfoBox.Rect.LowerRightCorner.X - 20;
-				rectangle.LowerRightCorner.Y = GInfoBox.Rect.LowerRightCorner.Y - 20;
-				GInfoBox.Text->setRelativePosition(rectangle);
-			}
+	if (PHInfoBox.Background)
+	{
+		PHInfoBox.Rect.UpperLeftCorner.X = X + s32((Width - PHInfoBox.Background->getSize().Width) / 2) + Displacement.PHInfoBox;
+		PHInfoBox.Rect.UpperLeftCorner.Y = Y;
+		PHInfoBox.Rect.LowerRightCorner.X = PHInfoBox.Rect.UpperLeftCorner.X + PHInfoBox.Background->getSize().Width;
+		PHInfoBox.Rect.LowerRightCorner.Y = PHInfoBox.Rect.UpperLeftCorner.Y + PHInfoBox.Background->getSize().Height;
+
+		if (PHInfoBox.Image.Image)
+		{
+			PHInfoBox.Image.Rect.UpperLeftCorner.X = PHInfoBox.Rect.UpperLeftCorner.X + s32((PHInfoBox.Rect.getWidth() - PHInfoBox.Image.Image->getSize().Width) / 2);
+			PHInfoBox.Image.Rect.UpperLeftCorner.Y = PHInfoBox.Rect.UpperLeftCorner.Y + s32((PHInfoBox.Rect.getHeight() - PHInfoBox.Image.Image->getSize().Height) / 2);
+			PHInfoBox.Image.Rect.LowerRightCorner = PHInfoBox.Image.Rect.UpperLeftCorner + PHInfoBox.Image.Image->getSize();
 		}
 	}
 }
@@ -252,87 +188,94 @@ void SSGUISideInfoBar::setVIndention(s32 VIndention)
 	rebuild();
 }
 
-void SSGUISideInfoBar::setBackground(ITexture *titleBoxBackground, ITexture *imageBoxBackground, ITexture *phinfoBoxBackground, ITexture *ginfoBoxBackground)
+void SSGUISideInfoBar::setBackground(ITexture *titleBoxBackground, ITexture *imageBoxBackground, ITexture *ginfoBoxBackground, ITexture *phinfoBoxBackground)
 {
 	TitleBox.Background = titleBoxBackground;
 	ImageBox.Background = imageBoxBackground;
-	PHInfoBox.Background = phinfoBoxBackground;
 	GInfoBox.Background = ginfoBoxBackground;
+	PHInfoBox.Background = phinfoBoxBackground;
 
 	rebuild();
 }
 
-void SSGUISideInfoBar::setTitleBoxCaption(const wchar_t *text, IGUIFont *font, SColor color)
+void SSGUISideInfoBar::setTitleBox(ITexture *image, SColor color)
 {
-	TitleBox.Caption.Text = text;
-	if (font)
-		TitleBox.Caption.Font = font;
-	TitleBox.Caption.Color = color;
-}
+	if (TitleBox.Image.Image)
+		TitleBox.Image.Image->drop();
 
-void SSGUISideInfoBar::setImageBoxIcon(ITexture *image)
-{
-	ImageBox.Icon.Image = image;
+	TitleBox.Image.Image = image;
+
+	if (TitleBox.Image.Image)
+		TitleBox.Image.Image->grab();
+
+	TitleBox.Color = color;
 
 	rebuild();
 }
 
-void SSGUISideInfoBar::setImageBoxImage(ITexture *image)
+ITexture* SSGUISideInfoBar::getTitleBox()
 {
+	return TitleBox.Image.Image;
+}
+
+void SSGUISideInfoBar::setImageBox(ITexture *image, SColor color)
+{
+	if (ImageBox.Image.Image)
+		ImageBox.Image.Image->drop();
+
 	ImageBox.Image.Image = image;
 
-	rebuild();
-}
+	if (ImageBox.Image.Image)
+		ImageBox.Image.Image->grab();
 
-void SSGUISideInfoBar::setImageBoxImageBackground(ITexture *image)
-{
-	ImageBox.ImageBackground.Image = image;
+	ImageBox.Color = color;
 
 	rebuild();
 }
 
-void SSGUISideInfoBar::setPHInfoBoxTextBoxAttributes(s32 HIndention, s32 VIndention, IGUIFont *font, SColor color1, SColor color2)
+ITexture* SSGUISideInfoBar::getImageBox()
 {
-	PHInfoBox.TextBox.HIndention = HIndention;
-	PHInfoBox.TextBox.VIndention = VIndention;
-	PHInfoBox.TextBox.Font = font;
-	PHInfoBox.TextBox.ColorLeft = color1;
-	PHInfoBox.TextBox.ColorRight = color2;
+	return ImageBox.Image.Image;
+}
+
+void SSGUISideInfoBar::setGInfoBox(ITexture *image, SColor color)
+{
+	if (GInfoBox.Image.Image)
+		GInfoBox.Image.Image->drop();
+
+	GInfoBox.Image.Image = image;
+
+	if (GInfoBox.Image.Image)
+		GInfoBox.Image.Image->grab();
+
+	GInfoBox.Color = color;
 
 	rebuild();
 }
 
-s32 SSGUISideInfoBar::addPHInfoBoxTextBlock(wchar_t *text1, wchar_t *text2, s32 id)
+ITexture* SSGUISideInfoBar::getGInfoBox()
 {
-	if (id == -1)
-	{
-		id = PHInfoBox.TextBox.TextBox.size();
-		SideInfoBarPHInfoBoxTextStructure textBlock;
-		PHInfoBox.TextBox.TextBox.push_back(textBlock);
-	}
-	
-	if (id < (s32)PHInfoBox.TextBox.TextBox.size() && id >= 0)
-	{
-		PHInfoBox.TextBox.TextBox[id].Left.Text = text1;
-		PHInfoBox.TextBox.TextBox[id].Right.Text = text2;
-	}
-	else
-		id = -1;
-
-	return id;
+	return GInfoBox.Image.Image;
 }
 
-void SSGUISideInfoBar::setGInfoBoxText(wchar_t *text, IGUIFont *font, SColor color)
+void SSGUISideInfoBar::setPHInfoBox(ITexture *image, SColor color)
 {
-	stringw string = L"      ";
-	string += text;
-	GInfoBox.Text->setText(string.c_str());
+	if (PHInfoBox.Image.Image)
+		PHInfoBox.Image.Image->drop();
 
-	GInfoBox.Text->setOverrideFont(font);
+	PHInfoBox.Image.Image = image;
 
-	GInfoBox.Text->setOverrideColor(color);
+	if (PHInfoBox.Image.Image)
+		PHInfoBox.Image.Image->grab();
+
+	PHInfoBox.Color = color;
 
 	rebuild();
+}
+
+ITexture* SSGUISideInfoBar::getPHInfoBox()
+{
+	return PHInfoBox.Image.Image;
 }
 
 void SSGUISideInfoBar::show()
@@ -364,6 +307,11 @@ void SSGUISideInfoBar::hideX()
 	Displacement.GInfoBox = screenSize.Width - IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() - GInfoBox.Rect.getWidth()) / 2);
 	neededState = 0;
 	rebuild();
+}
+
+void SSGUISideInfoBar::setAnimationSpeed(f32 speed)
+{
+	animSpeed = speed;
 }
 
 void SSGUISideInfoBar::OnPostRender(u32 timeMs)
@@ -400,17 +348,7 @@ void SSGUISideInfoBar::OnPostRender(u32 timeMs)
 					Alpha = alpha;
 			}
 
-			if (GInfoBox.Rect.UpperLeftCorner.X < screenSize.Width && Alpha == 0)
-			{
-				s32 Width = GInfoBox.Rect.getWidth();
-				Displacement.GInfoBox += s32((100.0 / Width) * (timeMs - prevTime) * speed);
-			}
-			else if (GInfoBox.Rect.UpperLeftCorner.X > screenSize.Width)
-			{
-				Displacement.GInfoBox = screenSize.Width - IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() - GInfoBox.Rect.getWidth()) / 2);
-			}
-
-			if (PHInfoBox.Rect.UpperLeftCorner.X < screenSize.Width && GInfoBox.Rect.UpperLeftCorner.X > IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() + HIndention) / 2))
+			if (PHInfoBox.Rect.UpperLeftCorner.X < screenSize.Width && Alpha == 0)
 			{
 				s32 Width = PHInfoBox.Rect.getWidth();
 				Displacement.PHInfoBox += s32((100.0 / Width) * (timeMs - prevTime) * speed);
@@ -420,7 +358,17 @@ void SSGUISideInfoBar::OnPostRender(u32 timeMs)
 				Displacement.PHInfoBox = screenSize.Width - IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() - PHInfoBox.Rect.getWidth()) / 2);
 			}
 
-			if (ImageBox.Rect.UpperLeftCorner.X < screenSize.Width && PHInfoBox.Rect.UpperLeftCorner.X > IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() + HIndention) / 2))
+			if (GInfoBox.Rect.UpperLeftCorner.X < screenSize.Width && PHInfoBox.Rect.UpperLeftCorner.X > IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() + HIndention) / 2))
+			{
+				s32 Width = GInfoBox.Rect.getWidth();
+				Displacement.GInfoBox += s32((100.0 / Width) * (timeMs - prevTime) * speed);
+			}
+			else if (GInfoBox.Rect.UpperLeftCorner.X > screenSize.Width)
+			{
+				Displacement.GInfoBox = screenSize.Width - IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() - GInfoBox.Rect.getWidth()) / 2);
+			}
+
+			if (ImageBox.Rect.UpperLeftCorner.X < screenSize.Width && GInfoBox.Rect.UpperLeftCorner.X > IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() + HIndention) / 2))
 			{
 				s32 Width = ImageBox.Rect.getWidth();
 				Displacement.ImageBox += s32((100.0 / Width) * (timeMs - prevTime) * speed);
@@ -464,19 +412,8 @@ void SSGUISideInfoBar::OnPostRender(u32 timeMs)
 				Displacement.ImageBox = 0;
 			}
 
-			if (PHInfoBox.Rect.UpperLeftCorner.X > IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() - PHInfoBox.Rect.getWidth()) / 2)
-				&& ImageBox.Rect.UpperLeftCorner.X < IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() + HIndention) / 2))
-			{
-				s32 Width = PHInfoBox.Rect.getWidth();
-				Displacement.PHInfoBox -= s32((100.0 / Width) * (timeMs - prevTime) * speed);
-			}
-			else if (PHInfoBox.Rect.UpperLeftCorner.X < IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() - PHInfoBox.Rect.getWidth()) / 2))
-			{
-				Displacement.PHInfoBox = 0;
-			}
-
 			if (GInfoBox.Rect.UpperLeftCorner.X > IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() - GInfoBox.Rect.getWidth()) / 2)
-				&& PHInfoBox.Rect.UpperLeftCorner.X < IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() + HIndention) / 2))
+				&& ImageBox.Rect.UpperLeftCorner.X < IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() + HIndention) / 2))
 			{
 				s32 Width = GInfoBox.Rect.getWidth();
 				Displacement.GInfoBox -= s32((100.0 / Width) * (timeMs - prevTime) * speed);
@@ -486,7 +423,18 @@ void SSGUISideInfoBar::OnPostRender(u32 timeMs)
 				Displacement.GInfoBox = 0;
 			}
 
-			if (Alpha < 255 && Displacement.GInfoBox == 0)
+			if (PHInfoBox.Rect.UpperLeftCorner.X > IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() - PHInfoBox.Rect.getWidth()) / 2)
+				&& GInfoBox.Rect.UpperLeftCorner.X < IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() + HIndention) / 2))
+			{
+				s32 Width = PHInfoBox.Rect.getWidth();
+				Displacement.PHInfoBox -= s32((100.0 / Width) * (timeMs - prevTime) * speed);
+			}
+			else if (PHInfoBox.Rect.UpperLeftCorner.X < IGUIElement::getAbsolutePosition().UpperLeftCorner.X + s32((IGUIElement::getAbsolutePosition().getWidth() - PHInfoBox.Rect.getWidth()) / 2))
+			{
+				Displacement.PHInfoBox = 0;
+			}
+
+			if (Alpha < 255 && Displacement.PHInfoBox == 0)
 			{
 				s32 alpha = Alpha + s32((100.0 / 255) * (timeMs - prevTime));
 				if (alpha >= 255)
@@ -521,11 +469,10 @@ void SSGUISideInfoBar::draw()
 	{
 		driver->draw2DImage(TitleBox.Background, TitleBox.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), TitleBox.Background->getOriginalSize()), 0, SColor(255,255,255,255), true);
 
-		if (TitleBox.Caption.Text)
+		if (TitleBox.Image.Image)
 		{
-			TitleBox.Caption.Color.setAlpha(Alpha);
-			if (Alpha > 0)
-				TitleBox.Caption.Font->draw(TitleBox.Caption.Text, TitleBox.Caption.Rect, TitleBox.Caption.Color, true, true);
+			TitleBox.Color.setAlpha(Alpha);
+			driver->draw2DImage(TitleBox.Image.Image, TitleBox.Image.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), TitleBox.Image.Image->getOriginalSize()), 0, TitleBox.Color, true);
 		}
 	}
 
@@ -533,39 +480,10 @@ void SSGUISideInfoBar::draw()
 	{
 		driver->draw2DImage(ImageBox.Background, ImageBox.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), ImageBox.Background->getOriginalSize()), 0, SColor(255,255,255,255), true);
 
-		if (ImageBox.ImageBackground.Image)
+		if (ImageBox.Image.Image)
 		{
-			driver->draw2DImage(ImageBox.ImageBackground.Image, ImageBox.ImageBackground.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), ImageBox.ImageBackground.Image->getOriginalSize()), 0, SColor(255,255,255,255), true);
-
-			if (Alpha > 0)
-			{
-				if (ImageBox.Image.Image)
-				{
-					driver->draw2DImage(ImageBox.Image.Image, ImageBox.Image.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), ImageBox.Image.Image->getOriginalSize()), 0, color, true);
-
-					if (ImageBox.Icon.Image)
-					{
-						driver->draw2DImage(ImageBox.Icon.Image, ImageBox.Icon.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), ImageBox.Icon.Image->getOriginalSize()), 0, TitleBox.Caption.Color, true);
-					}
-				}
-			}
-		}
-	}
-
-	if (PHInfoBox.Background && driver->getScreenSize().Width - Displacement.PHInfoBox >= IGUIElement::getAbsolutePosition().UpperLeftCorner.X)
-	{
-		driver->draw2DImage(PHInfoBox.Background, PHInfoBox.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), PHInfoBox.Background->getOriginalSize()), 0, SColor(255,255,255,255), true);
-
-		PHInfoBox.TextBox.ColorLeft.setAlpha(Alpha);
-		PHInfoBox.TextBox.ColorRight.setAlpha(Alpha);
-
-		if (Alpha > 0)
-		{
-			for (s32 i = 0; i < (s32)PHInfoBox.TextBox.TextBox.size(); i++)
-			{
-					PHInfoBox.TextBox.Font->draw(PHInfoBox.TextBox.TextBox[i].Left.Text, PHInfoBox.TextBox.TextBox[i].Left.Rect, PHInfoBox.TextBox.ColorLeft);
-					PHInfoBox.TextBox.Font->draw(PHInfoBox.TextBox.TextBox[i].Right.Text, PHInfoBox.TextBox.TextBox[i].Right.Rect, PHInfoBox.TextBox.ColorRight);
-			}
+			ImageBox.Color.setAlpha(Alpha);
+			driver->draw2DImage(ImageBox.Image.Image, ImageBox.Image.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), ImageBox.Image.Image->getOriginalSize()), 0, ImageBox.Color, true);
 		}
 	}
 
@@ -573,9 +491,22 @@ void SSGUISideInfoBar::draw()
 	{
 		driver->draw2DImage(GInfoBox.Background, GInfoBox.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), GInfoBox.Background->getOriginalSize()), 0, SColor(255,255,255,255), true);
 		
-		color = GInfoBox.Text->getOverrideColor();
-		color.setAlpha(Alpha);
-		GInfoBox.Text->setOverrideColor(color);
+		if (GInfoBox.Image.Image)
+		{
+			GInfoBox.Color.setAlpha(Alpha);
+			driver->draw2DImage(GInfoBox.Image.Image, GInfoBox.Image.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), GInfoBox.Image.Image->getOriginalSize()), 0, GInfoBox.Color, true);
+		}
+	}
+
+	if (PHInfoBox.Background && driver->getScreenSize().Width - Displacement.PHInfoBox >= IGUIElement::getAbsolutePosition().UpperLeftCorner.X)
+	{
+		driver->draw2DImage(PHInfoBox.Background, PHInfoBox.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), PHInfoBox.Background->getOriginalSize()), 0, SColor(255,255,255,255), true);
+
+		if (PHInfoBox.Image.Image)
+		{
+			PHInfoBox.Color.setAlpha(Alpha);
+			driver->draw2DImage(PHInfoBox.Image.Image, PHInfoBox.Image.Rect.UpperLeftCorner, rect<s32>(position2d<s32>(0,0), PHInfoBox.Image.Image->getOriginalSize()), 0, PHInfoBox.Color, true);
+		}
 	}
 
 	IGUIElement::draw();

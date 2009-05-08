@@ -47,6 +47,8 @@ public:
 	virtual s32 getCreatableGUIElementTypeCount() const;
 	virtual const c8* getCreateableGUIElementTypeName(s32 idx) const;
 
+	IGUIEnvironment* getGUIEnvironment();
+
 	//not used:
 	virtual const c8* getCreateableGUIElementTypeName(EGUI_ELEMENT_TYPE type) const {return 0;} ;
 	virtual EGUI_ELEMENT_TYPE getCreateableGUIElementType(s32 idx) const { return EGUIET_ELEMENT;};

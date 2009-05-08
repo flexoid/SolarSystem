@@ -25,14 +25,17 @@ public:
 
 	void setHIndention(s32 HIndention);
 	void setVIndention(s32 VIndention);
-	void setBackground(ITexture *titleBoxBackground, ITexture *imageBoxBackground, ITexture *phinfoBoxBackground, ITexture *ginfoBoxBackground);
-	void setTitleBoxCaption(const wchar_t *text, IGUIFont *font = 0, SColor color = SColor(255,255,255,255));
-	void setImageBoxImageBackground(ITexture *image);
-	void setImageBoxImage(ITexture *image);
-	void setImageBoxIcon(ITexture *icon);
-	void setPHInfoBoxTextBoxAttributes(s32 HIndention = 0, s32 VIndention = 0, IGUIFont *font = 0, SColor color1 = SColor(255,255,255,255), SColor color2 = SColor(255,255,255,255));
-	s32 addPHInfoBoxTextBlock(wchar_t *text1, wchar_t *text2, s32 id = -1);
-	void setGInfoBoxText(wchar_t *text, IGUIFont *font = 0, SColor color = SColor(255,255,255,255));
+	void setBackground(ITexture *titleBoxBackground, ITexture *imageBoxBackground, ITexture *ginfoBoxBackground, ITexture *phinfoBoxBackground);
+	void setTitleBox(ITexture *image, SColor color = SColor(255,255,255,255));
+	void setImageBox(ITexture *image, SColor color = SColor(255,255,255,255));
+	void setGInfoBox(ITexture *image, SColor color = SColor(255,255,255,255));
+	void setPHInfoBox(ITexture *image, SColor color = SColor(255,255,255,255));
+	void setAnimationSpeed(f32 speed);
+
+	ITexture* getTitleBox();
+	ITexture* getImageBox();
+	ITexture* getGInfoBox();
+	ITexture* getPHInfoBox();
 
 	void show();
 	void showX();
@@ -46,60 +49,32 @@ private:
 	struct SideInfoBarTitleBox
 	{
 		ITexture *Background;
-		SSGUICaptionStructure Caption;
+		SSGUIImageStructure Image;
+		SColor Color;
 		rect<s32> Rect;
 	};
 
 	struct SideInfoBarImageBox
 	{
 		ITexture *Background;
-		SSGUIImageStructure ImageBackground;
 		SSGUIImageStructure Image;
-		SSGUIImageStructure Icon;
-		rect<s32> Rect;
-	};
-
-	struct SideInfoBarPHInfoBoxTextBlockStructure
-	{
-		wchar_t *Text;
-		rect<s32> Rect;
-	};
-
-	struct SideInfoBarPHInfoBoxTextStructure
-	{
-		SideInfoBarPHInfoBoxTextBlockStructure Left;
-		SideInfoBarPHInfoBoxTextBlockStructure Right;
-
-		rect<s32> Rect;
-	};
-
-	struct SideInfoBarPHInfoBoxText
-	{
-		array<SideInfoBarPHInfoBoxTextStructure> TextBox;
-
-		IGUIFont *Font;
-		SColor ColorLeft;
-		SColor ColorRight;
-
-		s32 IntervalBetweenLines;
-
-		s32 HIndention;
-		s32 VIndention;
-
-		rect<s32> Rect;
-	};
-
-	struct SideInfoBarPHInfoBox
-	{
-		ITexture *Background;
-		SideInfoBarPHInfoBoxText TextBox;
+		SColor Color;
 		rect<s32> Rect;
 	};
 
 	struct SideInfoBarGInfoBox
 	{
 		ITexture *Background;
-		IGUIStaticText *Text;
+		SSGUIImageStructure Image;
+		SColor Color;
+		rect<s32> Rect;
+	};
+
+	struct SideInfoBarPHInfoBox
+	{
+		ITexture *Background;
+		SSGUIImageStructure Image;
+		SColor Color;
 		rect<s32> Rect;
 	};
 
@@ -107,8 +82,8 @@ private:
 	{
 		s32 TitleBox;
 		s32 ImageBox;
-		s32 PHInfoBox;
 		s32 GInfoBox;
+		s32 PHInfoBox;
 	};
 
 	SideInfoBarTitleBox TitleBox;

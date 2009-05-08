@@ -11,7 +11,7 @@ s32 getFreeElementID(s32 needed, IGUIEnvironment *env)
 		itoa(needed, buffer, 10);
 		double x = pow(10, (double)strlen(buffer));
 		delete[] buffer;
-		while(env->getRootGUIElement()->getElementFromId(needed, true)) needed += x;
+		while(env->getRootGUIElement()->getElementFromId(needed, true)) needed += (s32)x;
 	}
 	return needed;
 }

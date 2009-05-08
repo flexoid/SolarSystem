@@ -4,7 +4,7 @@
 #include "SSGUIElementFactory.h"
 #include "SSGUIFunctions.h"
 
-#define DATAWAY ".\\data\\"
+#define GUIDATAWAY "./data/GUI/"
 
 #define SCROLLBAR_ID 10001
 #define MENUBAR_ID 10002
@@ -17,6 +17,18 @@ extern SSGUIScrollBar *ZoomScrollBar;
 extern SSGUIMenuBar *MenuBar;
 extern SSGUISideNavigateBar *SideNavigateBar;
 extern SSGUISideInfoBar *SideInfoBar;
+
+extern s32 currentPlanetID;
+
+struct SideInfoBarStructure
+{
+	const char *TitleBox;
+	const char *ImageBox;
+	const char *GInfoBox;
+	const char *PHInfoBox;
+};
+
+extern struct SideInfoBarStructure InfoStructures[10];
 
 //						SideNavigateBar
 //-----------------------------------------------------------
@@ -42,13 +54,29 @@ extern s32 PlutoButtonID;
 extern s32 GlobalViewButtonID;
 extern s32 PrevPlanetButtonID;
 extern s32 NextPlanetButtonID;
+extern s32 FreeFlightButtonID;
+extern s32 HelpButtonID;
+extern s32 AboutButtonID;
+extern s32 MinimizeButtonID;
 extern s32 ExitButtonID;
 //-----------------------------------------------------------
 
 
 void InitializeGUI(IGUIEnvironment *environment);
+void InitializeZoomScrollBar();
+void InitializeMenuBar();
+void InitializeSideNavigateBar();
+void InitializeSideInfoBar();
+
+void FillSideInfoBarStructure();
+void FillSideInfoBar(s32 id);
 
 void GlobalView();
+void PrevPlanet();
+void NextPlanet();
+void FreeFlight();
+void Minimize();
+void Exit();
 void SideNavigateBarCallback(s32 groupID, s32 buttonID);
 
 #endif
