@@ -8,7 +8,7 @@ ISceneNode* AddMars()
 	if (mars)
 	{
 		mars->setMaterialFlag(EMF_LIGHTING, false);
-		mars->setMaterialTexture(0, driver->getTexture("./data/Textures/Hi/Mars/Mars.jpg"));
+		mars->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Mars/Mars.jpg").c_str()));
 		mars->addAnimator(animMars);
 		mars->addAnimator(animMarsRot);
 		mars->setRotation(vector3df(0.0f, 25.0f, 25.0f));

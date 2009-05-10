@@ -7,6 +7,8 @@
 #include "SSGUI.h"
 
 #include "SSSplashScreen.h"
+#include "ReadSettings.h"
+
 #pragma comment(lib, "Irrlicht.lib")
 
 using namespace irr;
@@ -27,7 +29,7 @@ IGUIEnvironment* guienv;
 //Параметры анимации
 bool IsActiveMoving = true;
 bool IsActiveRotating = true;
-f32 koeffSpeed = 0.15f;
+f32 koeffSpeed = 0.05f;
 f32 koeffOfDist = 4.0f;
 
 
@@ -46,6 +48,8 @@ ISceneNode* neptune;
 ISceneNode* Planets[10];
 
 ICameraSceneNode *camera; //Камера
+
+std::string PathToTextures = GetTexturesQuality();
 
 void GlobalView()
 {
@@ -76,6 +80,7 @@ void Minimize()
 
 void Exit()
 {
+	WritePrivateProfileString(L"Flags", L"Crashed", L"0", L"./settings.ini");
 	device->closeDevice();
 }
 
@@ -135,34 +140,28 @@ void SideNavigateBarCallback(s32 groupID, s32 buttonID)
 }
 
 int main()
+//int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	WritePrivateProfileString(L"Flags", L"Crashed", L"1", L"./settings.ini");
+	WritePrivateProfileString(L"Flags", L"FirstRun", L"0", L"./settings.ini");
 
-	char i;
 	video::E_DRIVER_TYPE driverType;
 
-	printf("Please select the driver you want for this example:\n"\
-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
-		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
-		" (f) NullDevice\n (otherKey) exit\n\n");
-
-	std::cin >> i;
-
-	switch(i)
+	switch(GetDirectXVersion())
 	{
-	case 'a': driverType = video::EDT_DIRECT3D9;break;
-	case 'b': driverType = video::EDT_DIRECT3D8;break;
-	case 'c': driverType = video::EDT_OPENGL;   break;
-	case 'd': driverType = video::EDT_SOFTWARE; break;
-	case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
-	case 'f': driverType = video::EDT_NULL;     break;
+	case 1: driverType = video::EDT_DIRECT3D9;break;
+	case 2: driverType = video::EDT_DIRECT3D8;break;
 	default: return 1;
 	}
 
 	device = createDevice(driverType, dimension2d<s32>(1024, 768),
-		32, false, false, false, 0);
+		32, GetScreenMode(), false, false, 0);
 	device->setWindowCaption(L"SunSyst   by FlexoID & Evilguc");
 
-	ShowSplash(L"./data/Images/SplashScreen/SplashScreen.bmp");
+	//ShowSplash(L"./data/Images/SplashScreen/SplashScreen.bmp");
+
+	HWND Handle = FindWindow(L"CIrrDeviceWin32", NULL);
+	DeleteMenu(GetSystemMenu(Handle, 0), SC_CLOSE, MF_BYCOMMAND);
 
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
@@ -195,7 +194,7 @@ int main()
 	//--------
 
 	//----Небо
-	ITexture *skyTexture = driver->getTexture("./data/Textures/Hi/Sky/Sky.jpg");
+	ITexture *skyTexture = driver->getTexture(std::string(PathToTextures + "Sky/Sky.jpg").c_str());
 	smgr->addSkyBoxSceneNode(skyTexture, skyTexture, skyTexture, 
 		skyTexture, skyTexture, skyTexture);
 	//--------
@@ -214,7 +213,7 @@ int main()
 
 	koeffOfDist = (f32)(DistanceScrollBar->getPos() / 1000.0f + 1.4f);
 
-	HideSplash();
+	//HideSplash();
 
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))

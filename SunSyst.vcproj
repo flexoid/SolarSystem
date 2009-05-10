@@ -400,6 +400,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="GettingSettings"
+				>
+				<File
+					RelativePath=".\ReadSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ReadSettings.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

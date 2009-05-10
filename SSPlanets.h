@@ -3,6 +3,7 @@
 #include <irrlicht.h>
 #include "SSFlyEllipceAnimator.h"
 #include "SSRotationAnimator.h"
+#include <string>
 
 #ifndef __SS_PLANETS_H_INCLUDED__
 #define __SS_PLANETS_H_INCLUDED__
@@ -26,6 +27,8 @@ extern ISceneManager* smgr;
 
 //Глобальные обьекты
 extern ISceneNode* sun;
+
+extern std::string PathToTextures;
 
 //Функции инициализации планет
 ISceneNode* AddSun();

@@ -8,7 +8,7 @@ ISceneNode* AddUranus()
 	if (uranus)
 	{
 		uranus->setMaterialFlag(EMF_LIGHTING, false);
-		uranus->setMaterialTexture(0, driver->getTexture("./data/Textures/Hi/Uranus/Uranus.jpg"));
+		uranus->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Uranus/Uranus.jpg").c_str()));
 		uranus->addAnimator(animUranus);
 		uranus->addAnimator(animUranusRot);
 		uranus->setRotation(vector3df(0.0f, 82.0f, 82.0f));

@@ -8,7 +8,7 @@ ISceneNode* AddMercury()
 	if (mercury)
 	{
 		mercury->setMaterialFlag(EMF_LIGHTING, false);
-		mercury->setMaterialTexture(0, driver->getTexture("./data/Textures/Hi/Mercury/Mercury.jpg"));
+		mercury->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Mercury/Mercury.jpg").c_str()));
 		mercury->addAnimator(animMercury);
 		mercury->addAnimator(animMercuryRot);
 		mercury->setRotation(vector3df(0.0f, 7.0f, 7.0f));

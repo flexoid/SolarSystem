@@ -8,7 +8,7 @@ ISceneNode* AddJupiter()
 	if (jupiter)
 	{
 		jupiter->setMaterialFlag(EMF_LIGHTING, false);
-		jupiter->setMaterialTexture(0, driver->getTexture("./data/Textures/Hi/Jupiter/Jupiter.jpg"));
+		jupiter->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Jupiter/Jupiter.jpg").c_str()));
 		jupiter->addAnimator(animJupiter);
 		jupiter->addAnimator(animJupiterRot);
 		jupiter->setRotation(vector3df(0.0f, 4.0f, 4.0f));

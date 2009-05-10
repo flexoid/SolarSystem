@@ -7,20 +7,19 @@ ISceneNode* AddSun()
 	if (sun)
 	{
 		sun->setMaterialFlag(EMF_LIGHTING, false);
-		sun->setMaterialTexture(0, driver->getTexture("./data/Textures/Hi/Sun/Sun.jpg"));
+		sun->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Sun/Sun.jpg").c_str()));
 		sun->addAnimator(animSunRot);
 	}
 	
-	IBillboardSceneNode* SunFlame = smgr->addBillboardSceneNode(0, dimension2df(360.0, 360.0), vector3df(0, 0, 0));
+	IBillboardSceneNode* SunFlame = smgr->addBillboardSceneNode(0, dimension2df(340.0, 340.0), vector3df(0, 0, 0));
 	SunFlame->setMaterialFlag(EMF_LIGHTING, false);
 	SunFlame->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 
 	array<ITexture*> textures;
-	ITexture* t = driver->getTexture(".\\data\\1.png");
-	textures.push_back(driver->getTexture("./data/Textures/Hi/Sun/Flame/SynFlame1.png"));
-	textures.push_back(driver->getTexture("./data/Textures/Hi/Sun/Flame/SynFlame2.png"));
-	textures.push_back(driver->getTexture("./data/Textures/Hi/Sun/Flame/SynFlame3.png"));
-	textures.push_back(driver->getTexture("./data/Textures/Hi/Sun/Flame/SynFlame4.png"));
+	textures.push_back(driver->getTexture(std::string(PathToTextures + "Sun/Flame/SynFlame1.png").c_str()));
+	textures.push_back(driver->getTexture(std::string(PathToTextures + "Sun/Flame/SynFlame2.png").c_str()));
+	textures.push_back(driver->getTexture(std::string(PathToTextures + "Sun/Flame/SynFlame3.png").c_str()));
+	textures.push_back(driver->getTexture(std::string(PathToTextures + "Sun/Flame/SynFlame4.png").c_str()));
 	ISceneNodeAnimator* SunFlameAnimator = smgr->createTextureAnimator(textures, 100);
 
 	SunFlame->addAnimator(SunFlameAnimator);

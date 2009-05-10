@@ -38,7 +38,6 @@ void t2()
 	for (x = 0; x < 255; x++) Sleep(4);
 	ZoomScrollBar->setVisible(false);
 	DistanceScrollBar->setVisible(true);
-	ZoomScrollBar->setPos(ZoomScrollBar->getMax() / 2);
 	camera->removeAnimators();
 	camera->setPosition(vector3df(-1000.0f, 500.0f, -1000.0f));
 	camera->setTarget(vector3df(0,0,0));

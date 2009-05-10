@@ -8,7 +8,7 @@ ISceneNode* AddVenus()
 	if (venus)
 	{
 		venus->setMaterialFlag(EMF_LIGHTING, false);
-		venus->setMaterialTexture(0, driver->getTexture("./data/Textures/Hi/Venus/Venus.jpg"));
+		venus->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Venus/Venus.jpg").c_str()));
 		venus->addAnimator(animVenus);
 		venus->addAnimator(animVenusRot);
 		venus->setRotation(vector3df(0.0f, 3.0f, 3.0f));
