@@ -8,7 +8,7 @@ ISceneNode* AddSaturn()
 	if (saturn)
 	{
 		saturn->setMaterialFlag(EMF_LIGHTING, false);
-		saturn->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Saturn/Saturn.jpg").c_str()));
+		saturn->setMaterialTexture(0, driver->getTexture(std::string(TexturesPath + "Saturn/Saturn.jpg").c_str()));
 		saturn->addAnimator(animSaturn);
 		saturn->addAnimator(animSaturnRot);
 		saturn->setRotation(vector3df(0.0f, 26.0f, 26.0f));
@@ -16,7 +16,7 @@ ISceneNode* AddSaturn()
 	ISceneNode *saturnRings = smgr->addMeshSceneNode(smgr->getMesh("./data/Models/SaturnRings/SaturnRings.obj"), saturn);
 	saturnRings->setMaterialFlag(EMF_LIGHTING, false);
 	saturnRings->setScale(vector3df(2.0f, 2.0f, 2.0f));
-	saturnRings->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Saturn/SaturnRings.png").c_str()));
+	saturnRings->setMaterialTexture(0, driver->getTexture(std::string(TexturesPath + "Saturn/SaturnRings.png").c_str()));
 	saturnRings->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 
 	Planets.push_back(saturn);

@@ -115,7 +115,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -132,9 +132,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\SolarSystem.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -284,6 +285,18 @@
 					</File>
 				</Filter>
 				<Filter
+					Name="StautsBar"
+					>
+					<File
+						RelativePath=".\SSGUIStatusBar.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUIStatusBar.h"
+						>
+					</File>
+				</Filter>
+				<Filter
 					Name="AboutWindow"
 					>
 					<File
@@ -292,18 +305,6 @@
 					</File>
 					<File
 						RelativePath=".\SSGUIAboutWindow.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="StatusBar"
-					>
-					<File
-						RelativePath=".\SSGUIStatusBar.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SSGUIStatusBar.h"
 						>
 					</File>
 				</Filter>
@@ -437,14 +438,14 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="GettingSettings"
+				Name="ReadSettings"
 				>
 				<File
-					RelativePath=".\ReadSettings.cpp"
+					RelativePath=".\SSReadSettings.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ReadSettings.h"
+					RelativePath=".\SSReadSettings.h"
 					>
 				</File>
 			</Filter>

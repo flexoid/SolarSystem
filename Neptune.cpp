@@ -8,7 +8,7 @@ ISceneNode* AddNeptune()
 	if (neptune)
 	{
 		neptune->setMaterialFlag(EMF_LIGHTING, false);
-		neptune->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Neptune/Neptune.jpg").c_str()));
+		neptune->setMaterialTexture(0, driver->getTexture(std::string(TexturesPath + "Neptune/Neptune.jpg").c_str()));
 		neptune->addAnimator(animNeptune);
 		neptune->addAnimator(animNeptuneRot);
 		neptune->setRotation(vector3df(0.0f, 29.0f, 29.0f));

@@ -3,6 +3,7 @@
 #include <irrlicht.h>
 #include "SSFlyEllipceAnimator.h"
 #include "SSRotationAnimator.h"
+
 #include <string>
 
 #ifndef __SS_PLANETS_H_INCLUDED__
@@ -14,8 +15,6 @@ using namespace scene;
 using namespace video;
 using namespace io;
 using namespace gui;
-
-extern array<ISceneNode*> Planets;
 
 //Параметры анимации (для доступности всем файлам проекта)
 extern bool IsActiveMoving;
@@ -30,7 +29,7 @@ extern ISceneManager* smgr;
 //Глобальные обьекты
 extern ISceneNode* sun;
 
-extern std::string PathToTextures;
+extern array<ISceneNode*> Planets;
 
 //Функции инициализации планет
 ISceneNode* AddSun();
@@ -43,5 +42,7 @@ ISceneNode* AddJupiter();
 ISceneNode* AddSaturn();
 ISceneNode* AddUranus();
 ISceneNode* AddNeptune();
+
+extern std::string TexturesPath;
 
 #endif

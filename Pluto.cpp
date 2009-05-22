@@ -8,7 +8,7 @@ ISceneNode* AddPluto()
 	if (pluto)
 	{
 		pluto->setMaterialFlag(EMF_LIGHTING, false);
-		pluto->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Pluto/Pluto.jpg").c_str()));
+		pluto->setMaterialTexture(0, driver->getTexture(std::string(TexturesPath + "Pluto/Pluto.jpg").c_str()));
 		pluto->addAnimator(animPluto);
 		pluto->addAnimator(animPlutoRot);
 	}

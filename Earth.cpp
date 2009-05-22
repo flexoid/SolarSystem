@@ -8,7 +8,7 @@ ISceneNode* AddEarth()
 	if (earth)
 	{
 		earth->setMaterialFlag(EMF_LIGHTING, false);
-		earth->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Earth/Earth.png").c_str()));
+		earth->setMaterialTexture(0, driver->getTexture(std::string(TexturesPath + "Earth/Earth.png").c_str()));
 		earth->addAnimator(animEarth);
 		earth->addAnimator(animEarthRot);
 		earth->setRotation(vector3df(0.0f, 23.0f, 23.0f));

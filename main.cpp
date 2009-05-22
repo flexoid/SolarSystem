@@ -3,13 +3,11 @@
 #include "SSPlanets.h"
 #include "SSEventReceiver.h"
 #include "SSMoveCameraTo.h"
+#include "SSReadSettings.h"
 #include "SSFreeFlightCameraMode.h"
-
 #include "SSGUI.h"
 
 #include "SSSplashScreen.h"
-#include "ReadSettings.h"
-
 #pragma comment(lib, "Irrlicht.lib")
 
 using namespace irr;
@@ -48,7 +46,7 @@ ISceneNode* neptune;
 
 ICameraSceneNode *camera; //Камера
 
-std::string PathToTextures = GetTexturesQuality();
+std::string TexturesPath;
 
 SSFreeFlightCameraMode *FreeFlightMode;
 SSGUIStatusBar *StatusBar;
@@ -151,29 +149,38 @@ void SideNavigateBarCallback(s32 groupID, s32 buttonID)
 	}
 }
 
-int main()
-//int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	WritePrivateProfileString(L"Flags", L"Crashed", L"1", L"./settings.ini");
-	WritePrivateProfileString(L"Flags", L"FirstRun", L"0", L"./settings.ini");
+	TexturesPath = GetTexturesQuality();
 
+	bool fullscreen = GetScreenMode();
+
+	char i;
 	video::E_DRIVER_TYPE driverType;
 
-	switch(GetDirectXVersion())
+	i = GetDirectXVersion();
+
+	switch(i)
 	{
-	case 1: driverType = video::EDT_DIRECT3D9;break;
-	case 2: driverType = video::EDT_DIRECT3D8;break;
+	case 'a': driverType = video::EDT_DIRECT3D9;break;
+	case 'b': driverType = video::EDT_DIRECT3D8;break;
+	case 'c': driverType = video::EDT_OPENGL;   break;
+	case 'd': driverType = video::EDT_SOFTWARE; break;
+	case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+	case 'f': driverType = video::EDT_NULL;     break;
 	default: return 1;
 	}
 
 	device = createDevice(driverType, dimension2d<s32>(1024, 768),
-		32, GetScreenMode(), false, false, 0);
-	device->setWindowCaption(L"SunSyst   by FlexoID & Evilguc");
-
-	//ShowSplash(L"./data/Images/SplashScreen/SplashScreen.bmp");
+		32, fullscreen, false, false, 0);
+	device->setWindowCaption(L"Солнечная система");
 
 	HWND Handle = FindWindow(L"CIrrDeviceWin32", NULL);
 	DeleteMenu(GetSystemMenu(Handle, 0), SC_CLOSE, MF_BYCOMMAND);
+	CloseHandle(Handle);
+
+	if (!fullscreen)
+		ShowSplash(L"./data/Images/SplashScreen/SplashScreen.bmp");
 
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
@@ -184,27 +191,27 @@ int main()
 
 	//-------------Создание планет
 	sun = AddSun();
+	earth = AddEarth();
+	pluto = AddPluto();
 	mercury = AddMercury();
 	venus = AddVenus();
-	earth = AddEarth();
 	mars = AddMars();
 	jupiter = AddJupiter();
 	saturn = AddSaturn();
 	uranus = AddUranus();
 	neptune = AddNeptune();
-	pluto = AddPluto();
 	//--------
 
 	//----Небо
-	ITexture *skyTexture = driver->getTexture(std::string(PathToTextures + "Sky/Sky.jpg").c_str());
+	ITexture *skyTexture = driver->getTexture(std::string(TexturesPath + "Sky/Sky.jpg").c_str());
 	smgr->addSkyBoxSceneNode(skyTexture, skyTexture, skyTexture, 
 		skyTexture, skyTexture, skyTexture);
 	//--------
 
 	camera = smgr->addCameraSceneNode(0, vector3df(-700.0f, 500.0f, -700.0f));
+	//camera = smgr->addCameraSceneNodeFPS();
 	camera->setFarValue(999999.0f);
 
-//-------------------------------------
 	InitializeGUI(guienv);
 
 	StatusBar = new SSGUIStatusBar(guienv, device->getCursorControl());
@@ -228,7 +235,6 @@ int main()
 	FreeFlightMode = new SSFreeFlightCameraMode(guienv, smgr, device->getCursorControl(), GUIElements);
 	FreeFlightMode->addCameraSceneNodeAnimators(Planets);
 	FreeFlightMode->setLabel(L"Для выхода из режима свободного полета нажмите клавишу <пробел>", guienv->getFont("./data/GUI/Fonts/Calibri(14px)b.xml"));
-//-------------------------------------
 
 	//-----Реализация рендеринга в отдельном потоке-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);
@@ -238,7 +244,8 @@ int main()
 
 	koeffOfDist = (f32)(DistanceScrollBar->getPos() / 1000.0f + 1.4f);
 
-	//HideSplash();
+	if (!fullscreen)
+		HideSplash();
 
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -246,11 +253,12 @@ int main()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+	return 0;
 }
 
 DWORD WINAPI renderWorker (void* arg)
 {
-	u32 frames = 0;
+	//u32 frames = 0;
 	IVideoDriver* driver = device->getVideoDriver();
 	while(device->run())
 	{
@@ -262,7 +270,7 @@ DWORD WINAPI renderWorker (void* arg)
 		MovingCamera(); // Перемещение камеры
 		driver->endScene();
 
-		if (++frames==100)
+		/*if (++frames==100)
 		{
 			core::stringw str = L"Irrlicht Engine [";
 			str += driver->getName();
@@ -272,6 +280,7 @@ DWORD WINAPI renderWorker (void* arg)
 			device->setWindowCaption(str.c_str());
 			frames=0;
 		}
+		*/
 		ReleaseMutex(mutex);
 
 		device->yield();
