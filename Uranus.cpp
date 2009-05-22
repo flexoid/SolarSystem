@@ -13,5 +13,8 @@ ISceneNode* AddUranus()
 		uranus->addAnimator(animUranusRot);
 		uranus->setRotation(vector3df(0.0f, 82.0f, 82.0f));
 	}
+
+	Planets.push_back(uranus);
+
 	return uranus;
 }

@@ -49,6 +49,16 @@ public:
 	virtual void draw(void);
 	virtual bool OnEvent(const SEvent &event);
 
+	virtual const stringw & getHelpText() const
+	{
+		return HelpText;
+	}
+
+	virtual void setHelpText(wchar_t *text)
+	{
+		HelpText = text;
+	}
+
 
 private:
 	IGUIFont *OverrideFont;
@@ -60,6 +70,8 @@ private:
 	bool Pressed;
 	bool Hovered;
 	bool WasPressed;
+
+	stringw HelpText;
 };
 
 #endif

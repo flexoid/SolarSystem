@@ -8,6 +8,9 @@
 #include "SSGUIMenuBar.h"
 #include "SSGUISideNavigateBar.h"
 #include "SSGUISideInfoBar.h"
+#include "SSGUIStatusBar.h"
+#include "SSGUISatelliteInfoWindow.h"
+#include "SSGUIAboutWindow.h"
 
 using namespace irr;
 using namespace core;
@@ -23,6 +26,7 @@ enum SSGUI_ELEMENT_TYPES
 	ESSGUI_MENUBAR,
 	ESSGUI_SIDENAVIGATEBAR,
 	ESSGUI_SIDEINFOBAR,
+	ESSGUI_STATUSBAR,
 
 	ESSGUI_COUNT
 };

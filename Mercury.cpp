@@ -13,5 +13,8 @@ ISceneNode* AddMercury()
 		mercury->addAnimator(animMercuryRot);
 		mercury->setRotation(vector3df(0.0f, 7.0f, 7.0f));
 	}
+
+	Planets.push_back(mercury);
+
 	return mercury;
 }

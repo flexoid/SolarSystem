@@ -12,5 +12,8 @@ ISceneNode* AddPluto()
 		pluto->addAnimator(animPluto);
 		pluto->addAnimator(animPlutoRot);
 	}
+
+	Planets.push_back(pluto);
+
 	return pluto;
 }

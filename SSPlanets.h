@@ -15,6 +15,8 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
+extern array<ISceneNode*> Planets;
+
 //Параметры анимации (для доступности всем файлам проекта)
 extern bool IsActiveMoving;
 extern bool IsActiveRotating;

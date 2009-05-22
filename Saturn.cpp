@@ -18,5 +18,8 @@ ISceneNode* AddSaturn()
 	saturnRings->setScale(vector3df(2.0f, 2.0f, 2.0f));
 	saturnRings->setMaterialTexture(0, driver->getTexture(std::string(PathToTextures + "Saturn/SaturnRings.png").c_str()));
 	saturnRings->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+
+	Planets.push_back(saturn);
+
 	return saturn;
 }

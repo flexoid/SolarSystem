@@ -1,5 +1,7 @@
 #include "SSPlanets.h"
 
+array<ISceneNode*> Planets;
+
 ISceneNode* AddSun()
 {
 	ISceneNode *sun = smgr->addSphereSceneNode(150.0f, 64, 0, -1, vector3df(0, 0, 0), vector3df(0, 0, 0), vector3df(1.0, 1.0, 1.0));
@@ -23,6 +25,8 @@ ISceneNode* AddSun()
 	ISceneNodeAnimator* SunFlameAnimator = smgr->createTextureAnimator(textures, 100);
 
 	SunFlame->addAnimator(SunFlameAnimator);
+
+	Planets.push_back(sun);
 	
 	return sun;
 }

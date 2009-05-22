@@ -3,6 +3,7 @@
 #include "SSPlanets.h"
 #include "SSEventReceiver.h"
 #include "SSMoveCameraTo.h"
+#include "SSFreeFlightCameraMode.h"
 
 #include "SSGUI.h"
 
@@ -45,11 +46,12 @@ ISceneNode* saturn;
 ISceneNode* uranus;
 ISceneNode* neptune;
 
-ISceneNode* Planets[10];
-
 ICameraSceneNode *camera; //Камера
 
 std::string PathToTextures = GetTexturesQuality();
+
+SSFreeFlightCameraMode *FreeFlightMode;
+SSGUIStatusBar *StatusBar;
 
 void GlobalView()
 {
@@ -70,6 +72,16 @@ void NextPlanet()
 	if (currentPlanetID > 9)
 		currentPlanetID = 0;
 	SSMoveCameraTo(camera, Planets[currentPlanetID]);
+}
+
+void FreeFlight()
+{
+	FreeFlightMode->On();
+}
+
+void About()
+{
+	AboutWindow->show("./data/GUI/Source/AboutWindow/Image/image.png");
 }
 
 void Minimize()
@@ -172,25 +184,15 @@ int main()
 
 	//-------------Создание планет
 	sun = AddSun();
-	earth = AddEarth();
-	pluto = AddPluto();
 	mercury = AddMercury();
 	venus = AddVenus();
+	earth = AddEarth();
 	mars = AddMars();
 	jupiter = AddJupiter();
 	saturn = AddSaturn();
 	uranus = AddUranus();
 	neptune = AddNeptune();
-	Planets[0] = sun;
-	Planets[1] = mercury;
-	Planets[2] = venus;
-	Planets[3] = earth;
-	Planets[4] = mars;
-	Planets[5] = jupiter;
-	Planets[6] = saturn;
-	Planets[7] = uranus;
-	Planets[8] = neptune;
-	Planets[9] = pluto;
+	pluto = AddPluto();
 	//--------
 
 	//----Небо
@@ -200,10 +202,33 @@ int main()
 	//--------
 
 	camera = smgr->addCameraSceneNode(0, vector3df(-700.0f, 500.0f, -700.0f));
-	//camera = smgr->addCameraSceneNodeFPS();
 	camera->setFarValue(999999.0f);
 
+//-------------------------------------
 	InitializeGUI(guienv);
+
+	StatusBar = new SSGUIStatusBar(guienv, device->getCursorControl());
+	StatusBar->setBackground(driver->getTexture("./data/GUI/Source/StatusBar/Background/background.png"));
+	StatusBar->setIndention(2, 2);
+	StatusBar->setTextAttributes(guienv->getFont("./data/GUI/Fonts/ArialNarrow(8px).xml"), SColor(255,255,255,255), 8);
+	StatusBar->addElement(ZoomScrollBar);
+	StatusBar->addElement(DistanceScrollBar);
+	StatusBar->addElement(SpeedScrollBar);
+	StatusBar->addElement(GlobalViewButton);
+	StatusBar->addElement(PrevPlanetButton);
+	StatusBar->addElement(NextPlanetButton);
+	StatusBar->addElement(FreeFlightButton);
+	//StatusBar->addElement(HelpButton);
+	StatusBar->addElement(AboutButton);
+	//StatusBar->addElement(MinimizeButton);
+	StatusBar->addElement(ExitButton);
+	StatusBar->addElement(SatelliteInfoWindow);
+	GUIElements.push_back(StatusBar);
+
+	FreeFlightMode = new SSFreeFlightCameraMode(guienv, smgr, device->getCursorControl(), GUIElements);
+	FreeFlightMode->addCameraSceneNodeAnimators(Planets);
+	FreeFlightMode->setLabel(L"Для выхода из режима свободного полета нажмите клавишу <пробел>", guienv->getFont("./data/GUI/Fonts/Calibri(14px)b.xml"));
+//-------------------------------------
 
 	//-----Реализация рендеринга в отдельном потоке-----------
 	mutex = CreateMutex (NULL, FALSE, NULL);

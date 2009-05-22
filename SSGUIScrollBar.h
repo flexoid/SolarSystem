@@ -46,6 +46,16 @@ public:
 	virtual bool OnEvent(const SEvent &event);
 	virtual void draw();
 
+	virtual const stringw & getHelpText() const
+	{
+		return HelpText;
+	}
+
+	virtual void setHelpText(wchar_t *text)
+	{
+		HelpText = text;
+	}
+
 private:
 
 	enum SSGUI_SCROLLBAR_SLIDER_STATES
@@ -81,6 +91,8 @@ private:
 	s32 LargeStep;
 	s32 DesiredPos;
 	u32 LastChange;
+
+	stringw HelpText;
 };
 
 #endif

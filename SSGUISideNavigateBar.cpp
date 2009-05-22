@@ -550,6 +550,9 @@ bool SSGUISideNavigateBar::OnEvent(const SEvent &event)
 
 void SSGUISideNavigateBar::draw()
 {
+	if (!IsVisible)
+		return;
+
 	IVideoDriver *driver = Environment->getVideoDriver();
 	rect<s32> Resolution = rect<s32>(position2d<s32>(0,0), driver->getScreenSize());
 
@@ -695,28 +698,6 @@ void SSGUISideNavigateBar::setSSButtonElementsForAll(ITexture *b_up, ITexture *b
 		}
 	}
 	rebuild();
-}
-
-void SSGUISideNavigateBar::deserializeAttributes(IAttributes *in, SAttributeReadWriteOptions *options)
-{
-	IVideoDriver *driver = Environment->getVideoDriver();
-
-	Background = driver->getTexture(in->getAttributeAsString("background").c_str());
-
-	HIndention = in->getAttributeAsInt("hindention");
-	VIndention = in->getAttributeAsInt("vindention");
-
-	Caption.Font = Environment->getFont(in->getAttributeAsString("caption_font").c_str());
-
-	Container.HIndention = Indention(in->getAttributeAsInt("container_lefthindention"), in->getAttributeAsInt("container_righthindention"));
-	Container.VIndention = Indention(in->getAttributeAsInt("container_topindention"), in->getAttributeAsInt("container_bottomhindention"));
-
-	GroupsBox.CaptionFont = Environment->getFont(in->getAttributeAsString("groups_caption_font").c_str());
-	GroupsBox.CaptionHIndention = Indention(in->getAttributeAsInt("groups_caption_lefthindention"), in->getAttributeAsInt("groups_caption_righthindention"));
-	GroupsBox.CaptionVIndention = in->getAttributeAsInt("groups_caption_vindention");
-	GroupsBox.IntervalAfterGroupCaption = in->getAttributeAsInt("groups_interval_after_caption");
-	GroupsBox.IntervalBetweenGroupButtons = in->getAttributeAsInt("groups_interval_between_buttons");
-	GroupsBox.IntervalBetweenGroups = in->getAttributeAsInt("interval_between_groups");
 }
 
 s32 SSGUISideNavigateBar::getFreeGroupID()

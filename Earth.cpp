@@ -13,5 +13,8 @@ ISceneNode* AddEarth()
 		earth->addAnimator(animEarthRot);
 		earth->setRotation(vector3df(0.0f, 23.0f, 23.0f));
 	}
+
+	Planets.push_back(earth);
+
 	return earth;
 }

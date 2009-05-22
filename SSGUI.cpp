@@ -1,27 +1,29 @@
 #include "SSGUI.h"
 
-s32 mode = -1;
-
 SSGUIElementFactory *Factory;
+
+array<IGUIElement*> GUIElements;
 
 SSGUIScrollBar *ZoomScrollBar;
 SSGUIScrollBar *DistanceScrollBar;
 SSGUIScrollBar *SpeedScrollBar;
-
 SSGUIMenuBar *MenuBar;
 SSGUISideNavigateBar *SideNavigateBar;
 SSGUISideInfoBar *SideInfoBar;
+SSGUISatelliteInfoWindow *SatelliteInfoWindow;
+IGUIButton *SatelliteInfoButton;
+SSGUIAboutWindow *AboutWindow;
 
-//						SideNavigateBar
+//							MenuBar
 //-----------------------------------------------------------
-s32 GlobalViewButtonID;
-s32 PrevPlanetButtonID;
-s32 NextPlanetButtonID;
-s32 FreeFlightButtonID;
-s32 HelpButtonID;
-s32 AboutButtonID;
-s32 MinimizeButtonID;
-s32 ExitButtonID;
+SSGUIButton *GlobalViewButton;
+SSGUIButton *PrevPlanetButton;
+SSGUIButton *NextPlanetButton;
+SSGUIButton *FreeFlightButton;
+SSGUIButton *HelpButton;
+SSGUIButton *AboutButton;
+SSGUIButton *MinimizeButton;
+SSGUIButton *ExitButton;
 //-----------------------------------------------------------
 
 //						SideNavigateBar
@@ -60,7 +62,9 @@ void InitializeGUI(IGUIEnvironment *environment)
 	InitializeSpeedScrollBar();
 	InitializeMenuBar();
 	InitializeSideNavigateBar();
-	InitializeSideInfoBar();
+	InitializeSideInfoBar();	
+	InitializeSatelliteInfoWindow();
+	InitializeAboutWindow();
 	FillSideInfoBarStructure();
 }
 
@@ -93,6 +97,10 @@ void InitializeZoomScrollBar()
 
 	koeffOfScale = ZoomScrollBar->getPos();
 	ZoomScrollBar->setVisible(false);
+
+	ZoomScrollBar->setHelpText(L"Испльзуйте для приближения/удаления камеры");
+
+	GUIElements.push_back(ZoomScrollBar);
 }
 
 void InitializeDistanceScrollBar()
@@ -122,6 +130,10 @@ void InitializeDistanceScrollBar()
 	DistanceScrollBar->setPos((s32)(koeffOfDist * 1000.0f));
 	DistanceScrollBar->setSmallStep(500);
 	DistanceScrollBar->setLargeStep(1000);
+
+	DistanceScrollBar->setHelpText(L"Используйте для изменения расстояния между планетами");
+
+	GUIElements.push_back(DistanceScrollBar);
 }
 
 void InitializeSpeedScrollBar()
@@ -147,6 +159,10 @@ void InitializeSpeedScrollBar()
 		0);
 	SpeedScrollBar->setPosition(position2d<s32>(20,30));
 	SpeedScrollBar->setMax(50000);
+
+	SpeedScrollBar->setHelpText(L"Используйте для настройки скорости движения планет");
+
+	GUIElements.push_back(SpeedScrollBar);
 }
 
 void InitializeMenuBar()
@@ -171,93 +187,105 @@ void InitializeMenuBar()
 	MenuBar->setVCenter(true);
 	MenuBar->setHIndention(15);
 
-	SSGUIButton *GlobalViewButton = (SSGUIButton*)Factory->addGUIElement("button");
+	GlobalViewButton = (SSGUIButton*)Factory->addGUIElement("button");
 	ITexture *gv_b_up = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/GlobalView/b_up.png");
 	ITexture *gv_b_mouse_over = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/GlobalView/b_mouse_over.png");
 	ITexture *gv_b_down = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/GlobalView/b_down.png");
 	GlobalViewButton->setVisualState(SSGBS_BUTTON_UP, gv_b_up);
 	GlobalViewButton->setVisualState(SSGBS_BUTTON_MOUSE_OVER, gv_b_mouse_over);
 	GlobalViewButton->setVisualState(SSGBS_BUTTON_DOWN, gv_b_down);
-	GlobalViewButtonID = MenuBar->addButton((IGUIButton*)GlobalViewButton);
+	GlobalViewButton->setHelpText(L"Главный вид");
+	s32 GlobalViewButtonID = MenuBar->addButton((IGUIButton*)GlobalViewButton);
 	MenuBar->setIntervalAfterButton(GlobalViewButtonID, 10);
 	MenuBar->setSeparatorAfterButton(GlobalViewButtonID, true);
 	MenuBar->setCallback(GlobalViewButtonID, GlobalView);
 
-	SSGUIButton *PrevPlanetButton = (SSGUIButton*)Factory->addGUIElement("button");
+	PrevPlanetButton = (SSGUIButton*)Factory->addGUIElement("button");
 	ITexture *pp_b_up = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/PrevPlanet/b_up.png");
 	ITexture *pp_b_mouse_over = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/PrevPlanet/b_mouse_over.png");
 	ITexture *pp_b_down = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/PrevPlanet/b_down.png");
 	PrevPlanetButton->setVisualState(SSGBS_BUTTON_UP, pp_b_up);
 	PrevPlanetButton->setVisualState(SSGBS_BUTTON_MOUSE_OVER, pp_b_mouse_over);
 	PrevPlanetButton->setVisualState(SSGBS_BUTTON_DOWN, pp_b_down);
-	PrevPlanetButtonID = MenuBar->addButton((IGUIButton*)PrevPlanetButton);
+	PrevPlanetButton->setHelpText(L"Переход к предыдущей планете");
+	s32 PrevPlanetButtonID = MenuBar->addButton((IGUIButton*)PrevPlanetButton);
 	MenuBar->setIntervalAfterButton(PrevPlanetButtonID, 3);
 	MenuBar->setCallback(PrevPlanetButtonID, PrevPlanet);
 
-	SSGUIButton *NextPlanetButton = (SSGUIButton*)Factory->addGUIElement("button");
+	NextPlanetButton = (SSGUIButton*)Factory->addGUIElement("button");
 	ITexture *np_b_up = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/NextPlanet/b_up.png");
 	ITexture *np_b_mouse_over = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/NextPlanet/b_mouse_over.png");
 	ITexture *np_b_down = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/NextPlanet/b_down.png");
 	NextPlanetButton->setVisualState(SSGBS_BUTTON_UP, np_b_up);
 	NextPlanetButton->setVisualState(SSGBS_BUTTON_MOUSE_OVER, np_b_mouse_over);
 	NextPlanetButton->setVisualState(SSGBS_BUTTON_DOWN, np_b_down);
-	NextPlanetButtonID = MenuBar->addButton((IGUIButton*)NextPlanetButton);
+	NextPlanetButton->setHelpText(L"Переход к следующей планете");
+	s32 NextPlanetButtonID = MenuBar->addButton((IGUIButton*)NextPlanetButton);
 	MenuBar->setIntervalAfterButton(NextPlanetButtonID, 11);
 	MenuBar->setSeparatorAfterButton(NextPlanetButtonID, true);
 	MenuBar->setCallback(NextPlanetButtonID, NextPlanet);
 
-	SSGUIButton *FreeFlightButton = (SSGUIButton*)Factory->addGUIElement("button");
+	FreeFlightButton = (SSGUIButton*)Factory->addGUIElement("button");
 	ITexture *ff_b_up = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/FreeFlight/b_up.png");
 	ITexture *ff_b_mouse_over = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/FreeFlight/b_mouse_over.png");
 	ITexture *ff_b_down = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/FreeFlight/b_down.png");
 	FreeFlightButton->setVisualState(SSGBS_BUTTON_UP, ff_b_up);
 	FreeFlightButton->setVisualState(SSGBS_BUTTON_MOUSE_OVER, ff_b_mouse_over);
 	FreeFlightButton->setVisualState(SSGBS_BUTTON_DOWN, ff_b_down);
-	FreeFlightButtonID = MenuBar->addButton((IGUIButton*)FreeFlightButton);
+	FreeFlightButton->setHelpText(L"Режим свободного полета");
+	s32 FreeFlightButtonID = MenuBar->addButton((IGUIButton*)FreeFlightButton);
 	MenuBar->setIntervalAfterButton(FreeFlightButtonID, 11);
 	MenuBar->setSeparatorAfterButton(FreeFlightButtonID, true);
+	MenuBar->setCallback(FreeFlightButtonID, FreeFlight);
 
-	SSGUIButton *HelpButton = (SSGUIButton*)Factory->addGUIElement("button");
+	/*HelpButton = (SSGUIButton*)Factory->addGUIElement("button");
 	ITexture *h_b_up = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/Help/b_up.png");
 	ITexture *h_b_mouse_over = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/Help/b_mouse_over.png");
 	ITexture *h_b_down = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/Help/b_down.png");
 	HelpButton->setVisualState(SSGBS_BUTTON_UP, h_b_up);
 	HelpButton->setVisualState(SSGBS_BUTTON_MOUSE_OVER, h_b_mouse_over);
 	HelpButton->setVisualState(SSGBS_BUTTON_DOWN, h_b_down);
-	HelpButtonID = MenuBar->addButton((IGUIButton*)HelpButton);
+	HelpButton->setHelpText(L"Справочник");
+	s32 HelpButtonID = MenuBar->addButton((IGUIButton*)HelpButton);
 	MenuBar->setIntervalAfterButton(HelpButtonID, 11);
-	MenuBar->setSeparatorAfterButton(HelpButtonID, true);
+	MenuBar->setSeparatorAfterButton(HelpButtonID, true);*/
 
-	SSGUIButton *AboutButton = (SSGUIButton*)Factory->addGUIElement("button");
+	AboutButton = (SSGUIButton*)Factory->addGUIElement("button");
 	ITexture *a_b_up = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/About/b_up.png");
 	ITexture *a_b_mouse_over = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/About/b_mouse_over.png");
 	ITexture *a_b_down = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/About/b_down.png");
 	AboutButton->setVisualState(SSGBS_BUTTON_UP, a_b_up);
 	AboutButton->setVisualState(SSGBS_BUTTON_MOUSE_OVER, a_b_mouse_over);
 	AboutButton->setVisualState(SSGBS_BUTTON_DOWN, a_b_down);
-	AboutButtonID = MenuBar->addButton((IGUIButton*)AboutButton);
+	AboutButton->setHelpText(L"О программе");
+	s32 AboutButtonID = MenuBar->addButton((IGUIButton*)AboutButton);
 	MenuBar->setIntervalAfterButton(AboutButtonID, 11);
 	MenuBar->setSeparatorAfterButton(AboutButtonID, true);
+	MenuBar->setCallback(AboutButtonID, About);
 
-	SSGUIButton *MinimizeButton = (SSGUIButton*)Factory->addGUIElement("button");
+	/*MinimizeButton = (SSGUIButton*)Factory->addGUIElement("button");
 	ITexture *m_b_up = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/Minimize/b_up.png");
 	ITexture *m_b_mouse_over = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/Minimize/b_mouse_over.png");
 	ITexture *m_b_down = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/Minimize/b_down.png");
 	MinimizeButton->setVisualState(SSGBS_BUTTON_UP, m_b_up);
 	MinimizeButton->setVisualState(SSGBS_BUTTON_MOUSE_OVER, m_b_mouse_over);
 	MinimizeButton->setVisualState(SSGBS_BUTTON_DOWN, m_b_down);
-	MinimizeButtonID = MenuBar->addButton((IGUIButton*)MinimizeButton);
-	MenuBar->setCallback(MinimizeButtonID, Minimize);
+	MinimizeButton->setHelpText(L"Свернуть программу");
+	s32 MinimizeButtonID = MenuBar->addButton((IGUIButton*)MinimizeButton);
+	MenuBar->setCallback(MinimizeButtonID, Minimize);*/
 
-	SSGUIButton *ExitButton = (SSGUIButton*)Factory->addGUIElement("button");
+	ExitButton = (SSGUIButton*)Factory->addGUIElement("button");
 	ITexture *e_b_up = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/Exit/b_up.png");
 	ITexture *e_b_mouse_over = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/Exit/b_mouse_over.png");
 	ITexture *e_b_down = driver->getTexture("./data/GUI/Source/MenuBar/Buttons/Exit/b_down.png");
 	ExitButton->setVisualState(SSGBS_BUTTON_UP, e_b_up);
 	ExitButton->setVisualState(SSGBS_BUTTON_MOUSE_OVER, e_b_mouse_over);
 	ExitButton->setVisualState(SSGBS_BUTTON_DOWN, e_b_down);
-	ExitButtonID = MenuBar->addButton((IGUIButton*)ExitButton);
+	ExitButton->setHelpText(L"Выйти из программы");
+	s32 ExitButtonID = MenuBar->addButton((IGUIButton*)ExitButton);
 	MenuBar->setCallback(ExitButtonID, Exit);
+
+	GUIElements.push_back(MenuBar);
 }
 
 void InitializeSideNavigateBar()
@@ -348,12 +376,15 @@ void InitializeSideNavigateBar()
 	PlutoButton->setText(L"Плутон");
 	PlutoButtonID = SideNavigateBar->addButtonToGroup(LittlePlanetsGroupID, (IGUIButton*)PlutoButton);
 //----------
+
 	SideNavigateBar->setSSButtonElementsForAll(b_up, b_mouse_over, b_down, 0, groups_button_font, SColor(255,0,166,81));
 
 	SideNavigateBar->setAnimationSpeed(4.0f);
 	SideNavigateBar->setCallback(SideNavigateBarCallback);
 
 	SideNavigateBar->showX();
+
+	GUIElements.push_back(SideNavigateBar);
 }
 
 void InitializeSideInfoBar()
@@ -374,6 +405,24 @@ void InitializeSideInfoBar()
 
 	SideInfoBar->setAnimationSpeed(2.0f);
 	SideInfoBar->hideX();
+
+	SatelliteInfoButton = environment->addButton(rect<s32>(0,0,0,0), SideInfoBar);
+	SatelliteInfoButton->setDrawBorder(false);
+
+	GUIElements.push_back(SideInfoBar);
+}
+
+void InitializeSatelliteInfoWindow()
+{
+	SatelliteInfoWindow = new SSGUISatelliteInfoWindow(Factory->getGUIEnvironment());
+	SatelliteInfoWindow->setShowTime(100);
+	SatelliteInfoWindow->setHelpText(L"Для закрытия таблицы кликните по ней");
+}
+
+void InitializeAboutWindow()
+{
+	AboutWindow = new SSGUIAboutWindow(Factory->getGUIEnvironment());
+	AboutWindow->setShowTime(500);
 }
 
 void FillSideInfoBarStructure()
@@ -382,51 +431,71 @@ void FillSideInfoBarStructure()
 	InfoStructures[0].ImageBox = "./data/GUI/Source/SideInfoBar/ImageBox/Data/sun.png";
 	InfoStructures[0].GInfoBox = "./data/GUI/Source/SideInfoBar/GInfoBox/Data/sun.png";
 	InfoStructures[0].PHInfoBox = "./data/GUI/Source/SideInfoBar/PHInfoBox/Data/sun.png";
+	InfoStructures[0].SatelliteInfo.SatelliteInfo = 0;
+	InfoStructures[0].SatelliteInfo.SatteliteInfoButtonPosition = rect<s32>(0,0,0,0);
 
 	InfoStructures[1].TitleBox = "./data/GUI/Source/SideInfoBar/TitleBox/Data/mercury.png";
 	InfoStructures[1].ImageBox = "./data/GUI/Source/SideInfoBar/ImageBox/Data/mercury.png";
 	InfoStructures[1].GInfoBox = "./data/GUI/Source/SideInfoBar/GInfoBox/Data/mercury.png";
 	InfoStructures[1].PHInfoBox = "./data/GUI/Source/SideInfoBar/PHInfoBox/Data/mercury.png";
+	InfoStructures[1].SatelliteInfo.SatelliteInfo = 0;
+	InfoStructures[1].SatelliteInfo.SatteliteInfoButtonPosition = rect<s32>(0,0,0,0);
 
 	InfoStructures[2].TitleBox = "./data/GUI/Source/SideInfoBar/TitleBox/Data/venus.png";
 	InfoStructures[2].ImageBox = "./data/GUI/Source/SideInfoBar/ImageBox/Data/venus.png";
 	InfoStructures[2].GInfoBox = "./data/GUI/Source/SideInfoBar/GInfoBox/Data/venus.png";
 	InfoStructures[2].PHInfoBox = "./data/GUI/Source/SideInfoBar/PHInfoBox/Data/venus.png";
+	InfoStructures[2].SatelliteInfo.SatelliteInfo = 0;
+	InfoStructures[2].SatelliteInfo.SatteliteInfoButtonPosition = rect<s32>(0,0,0,0);
 
 	InfoStructures[3].TitleBox = "./data/GUI/Source/SideInfoBar/TitleBox/Data/earth.png";
 	InfoStructures[3].ImageBox = "./data/GUI/Source/SideInfoBar/ImageBox/Data/earth.png";
 	InfoStructures[3].GInfoBox = "./data/GUI/Source/SideInfoBar/GInfoBox/Data/earth.png";
 	InfoStructures[3].PHInfoBox = "./data/GUI/Source/SideInfoBar/PHInfoBox/Data/earth.png";
+	InfoStructures[3].SatelliteInfo.SatelliteInfo = "./data/GUI/Source/SideInfoBar/SatelliteInfo/earth.png";
+	InfoStructures[3].SatelliteInfo.SatteliteInfoButtonPosition = rect<s32>(171,516,171+61,516+14);
 
 	InfoStructures[4].TitleBox = "./data/GUI/Source/SideInfoBar/TitleBox/Data/mars.png";
 	InfoStructures[4].ImageBox = "./data/GUI/Source/SideInfoBar/ImageBox/Data/mars.png";
 	InfoStructures[4].GInfoBox = "./data/GUI/Source/SideInfoBar/GInfoBox/Data/mars.png";
 	InfoStructures[4].PHInfoBox = "./data/GUI/Source/SideInfoBar/PHInfoBox/Data/mars.png";
+	InfoStructures[4].SatelliteInfo.SatelliteInfo = "./data/GUI/Source/SideInfoBar/SatelliteInfo/mars.png";
+	InfoStructures[4].SatelliteInfo.SatteliteInfoButtonPosition = rect<s32>(171,513,171+61,513+14);
 
 	InfoStructures[5].TitleBox = "./data/GUI/Source/SideInfoBar/TitleBox/Data/jupiter.png";
 	InfoStructures[5].ImageBox = "./data/GUI/Source/SideInfoBar/ImageBox/Data/jupiter.png";
 	InfoStructures[5].GInfoBox = "./data/GUI/Source/SideInfoBar/GInfoBox/Data/jupiter.png";
 	InfoStructures[5].PHInfoBox = "./data/GUI/Source/SideInfoBar/PHInfoBox/Data/jupiter.png";
+	InfoStructures[5].SatelliteInfo.SatelliteInfo = "./data/GUI/Source/SideInfoBar/SatelliteInfo/jupiter.png";
+	InfoStructures[5].SatelliteInfo.SatteliteInfoButtonPosition = rect<s32>(176,513,178+61,513+14);
 
 	InfoStructures[6].TitleBox = "./data/GUI/Source/SideInfoBar/TitleBox/Data/saturn.png";
 	InfoStructures[6].ImageBox = "./data/GUI/Source/SideInfoBar/ImageBox/Data/saturn.png";
 	InfoStructures[6].GInfoBox = "./data/GUI/Source/SideInfoBar/GInfoBox/Data/saturn.png";
 	InfoStructures[6].PHInfoBox = "./data/GUI/Source/SideInfoBar/PHInfoBox/Data/saturn.png";
+	InfoStructures[6].SatelliteInfo.SatelliteInfo = "./data/GUI/Source/SideInfoBar/SatelliteInfo/saturn.png";
+	InfoStructures[6].SatelliteInfo.SatteliteInfoButtonPosition = rect<s32>(173,513,173+61,513+14);
 
 	InfoStructures[7].TitleBox = "./data/GUI/Source/SideInfoBar/TitleBox/Data/uranus.png";
 	InfoStructures[7].ImageBox = "./data/GUI/Source/SideInfoBar/ImageBox/Data/uranus.png";
 	InfoStructures[7].GInfoBox = "./data/GUI/Source/SideInfoBar/GInfoBox/Data/uranus.png";
 	InfoStructures[7].PHInfoBox = "./data/GUI/Source/SideInfoBar/PHInfoBox/Data/uranus.png";
+	InfoStructures[7].SatelliteInfo.SatelliteInfo = "./data/GUI/Source/SideInfoBar/SatelliteInfo/uranus.png";
+	InfoStructures[7].SatelliteInfo.SatteliteInfoButtonPosition = rect<s32>(173,513,173+61,513+14);
 
 	InfoStructures[8].TitleBox = "./data/GUI/Source/SideInfoBar/TitleBox/Data/neptune.png";
 	InfoStructures[8].ImageBox = "./data/GUI/Source/SideInfoBar/ImageBox/Data/neptune.png";
 	InfoStructures[8].GInfoBox = "./data/GUI/Source/SideInfoBar/GInfoBox/Data/neptune.png";
 	InfoStructures[8].PHInfoBox = "./data/GUI/Source/SideInfoBar/PHInfoBox/Data/neptune.png";
+	InfoStructures[8].SatelliteInfo.SatelliteInfo = "./data/GUI/Source/SideInfoBar/SatelliteInfo/neptune.png";
+	InfoStructures[8].SatelliteInfo.SatteliteInfoButtonPosition = rect<s32>(173,521,173+61,521+14);
 
 	InfoStructures[9].TitleBox = "./data/GUI/Source/SideInfoBar/TitleBox/Data/pluto.png";
 	InfoStructures[9].ImageBox = "./data/GUI/Source/SideInfoBar/ImageBox/Data/pluto.png";
 	InfoStructures[9].GInfoBox = "./data/GUI/Source/SideInfoBar/GInfoBox/Data/pluto.png";
 	InfoStructures[9].PHInfoBox = "./data/GUI/Source/SideInfoBar/PHInfoBox/Data/pluto.png";
+	InfoStructures[9].SatelliteInfo.SatelliteInfo = "./data/GUI/Source/SideInfoBar/SatelliteInfo/pluto.png";
+	InfoStructures[9].SatelliteInfo.SatteliteInfoButtonPosition = rect<s32>(168,521,168+61,521+14);
 }
 
 void FillSideInfoBar(s32 id)
@@ -449,6 +518,7 @@ void FillSideInfoBar(s32 id)
 		ImageBox = driver->getTexture(InfoStructures[id].ImageBox);
 		GInfoBox = driver->getTexture(InfoStructures[id].GInfoBox);
 		PHInfoBox = driver->getTexture(InfoStructures[id].PHInfoBox);
+		SatelliteInfoButton->setRelativePosition(InfoStructures[id].SatelliteInfo.SatteliteInfoButtonPosition);
 	}
 
 	SideInfoBar->setTitleBox(TitleBox);

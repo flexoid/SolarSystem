@@ -13,5 +13,8 @@ ISceneNode* AddJupiter()
 		jupiter->addAnimator(animJupiterRot);
 		jupiter->setRotation(vector3df(0.0f, 4.0f, 4.0f));
 	}
+
+	Planets.push_back(jupiter);
+
 	return jupiter;
 }

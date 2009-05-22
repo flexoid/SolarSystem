@@ -13,5 +13,8 @@ ISceneNode* AddMars()
 		mars->addAnimator(animMarsRot);
 		mars->setRotation(vector3df(0.0f, 25.0f, 25.0f));
 	}
+
+	Planets.push_back(mars);
+
 	return mars;
 }

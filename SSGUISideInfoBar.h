@@ -22,6 +22,8 @@ public:
 	virtual void OnPostRender(u32 timeMs);
 	virtual void draw();
 	virtual bool OnEvent(const SEvent &event);
+	virtual void setVisible(bool visible);
+	virtual bool isVisible() const;
 
 	void setHIndention(s32 HIndention);
 	void setVIndention(s32 VIndention);
@@ -42,9 +44,21 @@ public:
 	void hide();
 	void hideX();
 
+	virtual const stringw & getHelpText() const
+	{
+		return HelpText;
+	}
+
+	virtual void setHelpText(wchar_t *text)
+	{
+		HelpText = text;
+	}
+
 private:
 	void update();
 	void rebuild();
+
+	bool Visible;
 
 	struct SideInfoBarTitleBox
 	{
@@ -100,6 +114,8 @@ private:
 	s32 neededState;
 	f32 animSpeed;
 	s32 Alpha;
+
+	stringw HelpText;
 };
 
 #endif

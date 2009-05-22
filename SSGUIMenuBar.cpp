@@ -7,7 +7,7 @@ SSGUIMenuBar::SSGUIMenuBar(ITexture *image, IGUIEnvironment *environment, IGUIEl
 			Interval(1), Horizontal(true), HIndention(1,1), VIndention(1,1), HCenter(false), VCenter(false)
 {
 	Background = image;
-
+	
 	update();
 }
 
@@ -423,6 +423,9 @@ s32 SSGUIMenuBar::getFreeButtonID()
 
 void SSGUIMenuBar::draw()
 {
+	if (!IsVisible)
+		return;
+
 	IVideoDriver *driver = Environment->getVideoDriver();
 	if (Background)
 	{
@@ -500,18 +503,4 @@ bool SSGUIMenuBar::OnEvent(const SEvent &event)
 		return true;
 	}
 	return IGUIElement::OnEvent(event);
-}
-
-void SSGUIMenuBar::deserializeAttributes(IAttributes *in, SAttributeReadWriteOptions *options)
-{
-	IVideoDriver *driver = Environment->getVideoDriver();
-
-	Background = driver->getTexture(in->getAttributeAsString("background").c_str());
-	Separator = driver->getTexture(in->getAttributeAsString("separator").c_str());
-	HIndention = Indention(in->getAttributeAsInt("leftindention"), in->getAttributeAsInt("rightindention"));
-	VIndention = Indention(in->getAttributeAsInt("topindention"), in->getAttributeAsInt("bottomindention"));
-	HCenter = in->getAttributeAsBool("hcenter");
-	VCenter = in->getAttributeAsBool("vcenter");
-
-	rebuild();
 }

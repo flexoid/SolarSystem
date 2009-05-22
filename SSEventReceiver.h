@@ -64,6 +64,13 @@ public:
 							koeffSpeed = (f32)(0.15f * (1.0f + SpeedScrollBar->getPos() / 1000.0f)); 
 					}
 				}
+			case EGET_BUTTON_CLICKED:
+				{
+					if (caller == SatelliteInfoButton)
+					{
+						SatelliteInfoWindow->show(InfoStructures[currentPlanetID].SatelliteInfo.SatelliteInfo);
+					}
+				}
 			default:
 				break;
 			}

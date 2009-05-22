@@ -13,5 +13,8 @@ ISceneNode* AddVenus()
 		venus->addAnimator(animVenusRot);
 		venus->setRotation(vector3df(0.0f, 3.0f, 3.0f));
 	}
+
+	Planets.push_back(venus);
+
 	return venus;
 }

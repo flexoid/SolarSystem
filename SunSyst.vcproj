@@ -283,6 +283,42 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="AboutWindow"
+					>
+					<File
+						RelativePath=".\SSGUIAboutWindow.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUIAboutWindow.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="StatusBar"
+					>
+					<File
+						RelativePath=".\SSGUIStatusBar.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUIStatusBar.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="SatelliteInfoWindow"
+					>
+					<File
+						RelativePath=".\SSGUISatelliteInfoWindow.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SSGUISatelliteInfoWindow.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Animators"
@@ -409,6 +445,18 @@
 				</File>
 				<File
 					RelativePath=".\ReadSettings.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="FreeFlightCameraMode"
+				>
+				<File
+					RelativePath=".\SSFreeFlightCameraMode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SSFreeFlightCameraMode.h"
 					>
 				</File>
 			</Filter>

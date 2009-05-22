@@ -23,7 +23,6 @@ public:
 
 	virtual void draw();
 	virtual bool OnEvent(const SEvent &event);
-	virtual void deserializeAttributes(IAttributes *in, SAttributeReadWriteOptions *options = 0);
 	
 	void setOrientaiton(bool horizontal);
 	void setBackground(ITexture *image);
@@ -40,6 +39,16 @@ public:
 	s32 addButton(IGUIButton *button);
 	bool dropButton(s32 buttonID);
 	void setCallback(s32 buttonID, callback cb);
+
+	virtual const stringw & getHelpText() const
+	{
+		return HelpText;
+	}
+
+	virtual void setHelpText(wchar_t *text)
+	{
+		HelpText = text;
+	}
 
 private:
 	void update(void);
@@ -71,6 +80,8 @@ private:
 	Indention VIndention;
 	bool HCenter;
 	bool VCenter;
+
+	stringw HelpText;
 };
 
 #endif

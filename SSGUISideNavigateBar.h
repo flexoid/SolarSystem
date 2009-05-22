@@ -25,7 +25,6 @@ public:
 	virtual void draw();
 	virtual bool OnEvent(const SEvent &event);
 	virtual void OnPostRender(u32 timeMs);
-	virtual void deserializeAttributes(IAttributes *in, SAttributeReadWriteOptions *options = 0);
 
 	void setBackground(ITexture *image);
 
@@ -69,6 +68,16 @@ public:
 	void hide();
 	void hideX();
 	void setAnimationSpeed(f32 speed);
+
+	virtual const stringw & getHelpText() const
+	{
+		return HelpText;
+	}
+
+	virtual void setHelpText(wchar_t *text)
+	{
+		HelpText = text;
+	}
 
 private:
 	void rebuild();
@@ -151,6 +160,8 @@ private:
 
 	s32 neededState;
 	f32 animSpeed;
+
+	stringw HelpText;
 };
 
 #endif

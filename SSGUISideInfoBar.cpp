@@ -36,6 +36,8 @@ SSGUISideInfoBar::SSGUISideInfoBar(IGUIEnvironment *environment, IGUIElement *pa
 	HIndention = 0;
 	VIndention = 0;
 
+	Visible = true;
+
 	neededState = 0;
 	animSpeed = 3.0f;
 	Alpha = 0;
@@ -314,6 +316,16 @@ void SSGUISideInfoBar::setAnimationSpeed(f32 speed)
 	animSpeed = speed;
 }
 
+void SSGUISideInfoBar::setVisible(bool visible)
+{
+	Visible = visible;
+}
+
+bool SSGUISideInfoBar::isVisible() const
+{
+	return Visible;
+}
+
 void SSGUISideInfoBar::OnPostRender(u32 timeMs)
 {
 	static s32 prevTime = -1;
@@ -462,6 +474,9 @@ void SSGUISideInfoBar::OnPostRender(u32 timeMs)
 
 void SSGUISideInfoBar::draw()
 {
+	if (!Visible)
+		return;
+
 	IVideoDriver *driver = Environment->getVideoDriver();
 	SColor color = SColor(Alpha,255,255,255);
 

@@ -13,15 +13,26 @@
 
 extern SSGUIElementFactory *Factory;
 
+extern array<IGUIElement*> GUIElements;
+
 extern SSGUIScrollBar *ZoomScrollBar;
 extern SSGUIScrollBar *DistanceScrollBar;
 extern SSGUIScrollBar *SpeedScrollBar;
-
 extern SSGUIMenuBar *MenuBar;
 extern SSGUISideNavigateBar *SideNavigateBar;
 extern SSGUISideInfoBar *SideInfoBar;
+extern SSGUIStatusBar *StatusBar;
+extern SSGUISatelliteInfoWindow *SatelliteInfoWindow;
+extern IGUIButton *SatelliteInfoButton;
+extern SSGUIAboutWindow *AboutWindow;
 
 extern s32 currentPlanetID;
+
+struct SatelliteInfoParameters
+{
+	const char *SatelliteInfo;
+	rect<s32> SatteliteInfoButtonPosition;
+};
 
 struct SideInfoBarStructure
 {
@@ -29,6 +40,8 @@ struct SideInfoBarStructure
 	const char *ImageBox;
 	const char *GInfoBox;
 	const char *PHInfoBox;
+	//const char *SatelliteInfo;
+	SatelliteInfoParameters SatelliteInfo;
 };
 
 extern struct SideInfoBarStructure InfoStructures[10];
@@ -54,14 +67,14 @@ extern s32 PlutoButtonID;
 
 //						SideNavigateBar
 //-----------------------------------------------------------
-extern s32 GlobalViewButtonID;
-extern s32 PrevPlanetButtonID;
-extern s32 NextPlanetButtonID;
-extern s32 FreeFlightButtonID;
-extern s32 HelpButtonID;
-extern s32 AboutButtonID;
-extern s32 MinimizeButtonID;
-extern s32 ExitButtonID;
+extern SSGUIButton *GlobalViewButton;
+extern SSGUIButton *PrevPlanetButton;
+extern SSGUIButton *NextPlanetButton;
+extern SSGUIButton *FreeFlightButton;
+extern SSGUIButton *HelpButton;
+extern SSGUIButton *AboutButton;
+extern SSGUIButton *MinimizeButton;
+extern SSGUIButton *ExitButton;
 //-----------------------------------------------------------
 
 extern s32 koeffOfScale;
@@ -75,6 +88,8 @@ void InitializeSpeedScrollBar();
 void InitializeMenuBar();
 void InitializeSideNavigateBar();
 void InitializeSideInfoBar();
+void InitializeSatelliteInfoWindow();
+void InitializeAboutWindow();
 
 void FillSideInfoBarStructure();
 void FillSideInfoBar(s32 id);
@@ -83,6 +98,7 @@ void GlobalView();
 void PrevPlanet();
 void NextPlanet();
 void FreeFlight();
+void About();
 void Minimize();
 void Exit();
 void SideNavigateBarCallback(s32 groupID, s32 buttonID);

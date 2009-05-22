@@ -13,5 +13,8 @@ ISceneNode* AddNeptune()
 		neptune->addAnimator(animNeptuneRot);
 		neptune->setRotation(vector3df(0.0f, 29.0f, 29.0f));
 	}
+
+	Planets.push_back(neptune);
+
 	return neptune;
 }
